@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 
 
 import minhaFoto from './assets/foto1.jpeg';
@@ -17,8 +17,51 @@ import certificado from './assets/Imersao Dev com Google Gemini.png';
 import certifingles from './assets/Curso de English .jpeg';
 import LightRays from "./assets/components/LightRays";
 
+/**
+ * Hook simples de "scroll reveal": observa um elemento e, quando ele entra
+ * na viewport, adiciona a classe "is-visible" (dispara a transição do CSS).
+ * Cada seção só revela uma vez, então a animação não fica repetindo ao
+ * subir e descer a página.
+ */
+function useReveal() {
+  const ref = useRef(null);
+
+  useEffect(() => {
+    const node = ref.current;
+    if (!node) return;
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          node.classList.add('is-visible');
+          observer.unobserve(node);
+        }
+      },
+      { threshold: 0.15, rootMargin: '0px 0px -60px 0px' }
+    );
+
+    observer.observe(node);
+    return () => observer.disconnect();
+  }, []);
+
+  return ref;
+}
+
 export default function App() {
   const [imagemZoom, setImagemZoom] = useState(null);
+  const [heroVisible, setHeroVisible] = useState(false);
+
+  const sobreRef = useReveal();
+  const certificadosRef = useReveal();
+  const destaqueRef = useReveal();
+  const galeriaRef = useReveal();
+  const contatoRef = useReveal();
+
+  useEffect(() => {
+    // Dispara o fade-in escalonado do herói assim que o componente monta.
+    const timer = setTimeout(() => setHeroVisible(true), 80);
+    return () => clearTimeout(timer);
+  }, []);
 
   const scrollToSection = (id) => {
     const element = document.getElementById(id);
@@ -172,7 +215,233 @@ export default function App() {
       }}
     >
 
-   
+      {/* Estilos de animação: mantidos num único bloco para ficar fácil
+          de ajustar depois. Respeita prefers-reduced-motion no final. */}
+      <style>{`
+        @keyframes fadeInUp {
+          from { opacity: 0; transform: translateY(35px); }
+          to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes fadeIn {
+          from { opacity: 0; }
+          to { opacity: 1; }
+        }
+
+        @keyframes floatAvatar {
+          0%, 100% { transform: translateY(0); }
+          50% { transform: translateY(-8px); }
+        }
+
+        @keyframes glowPulse {
+          0%, 100% { box-shadow: 0 0 25px rgba(255, 255, 255, 0.2); }
+          50% { box-shadow: 0 0 38px rgba(255, 255, 255, 0.4); }
+        }
+
+        @keyframes navAppear {
+          from { opacity: 0; transform: translateY(-20px); filter: blur(4px); }
+          to { opacity: 1; transform: translateY(0); filter: blur(0); }
+        }
+
+        @keyframes cardAppear {
+          from { opacity: 0; transform: translateY(22px) scale(0.985); }
+          to { opacity: 1; transform: translateY(0) scale(1); }
+        }
+
+        @keyframes shine {
+          0% { left: -100%; }
+          100% { left: 150%; }
+        }
+
+        .hero-item {
+          opacity: 0;
+          transform: translateY(25px);
+          transition: opacity 1s ease, transform 1s cubic-bezier(.16,1,.3,1);
+        }
+
+        .hero-item.is-visible {
+          opacity: 1;
+          transform: translateY(0);
+        }
+
+        .reveal-section {
+          opacity: 0;
+          transform: translateY(35px);
+          transition: opacity 1s ease, transform 1s cubic-bezier(.16,1,.3,1);
+        }
+
+        .reveal-section.is-visible {
+          opacity: 1;
+          transform: translateY(0);
+        }
+
+        .avatar-container {
+          animation: floatAvatar 5s ease-in-out infinite, glowPulse 4s ease-in-out infinite;
+          transition: transform 0.4s cubic-bezier(.22,1,.36,1);
+        }
+
+        .avatar-container:hover {
+          transform: scale(1.06) rotate(1deg);
+        }
+
+        .main-navbar {
+          animation: navAppear 0.8s cubic-bezier(.22,1,.36,1);
+        }
+
+        .nav-link {
+          position: relative;
+          overflow: hidden;
+          transition: color 0.4s ease, transform 0.45s cubic-bezier(.16,1,.3,1), background-color 0.4s ease;
+        }
+
+        .nav-link::before {
+          content: '';
+          position: absolute;
+          width: 100%;
+          height: 100%;
+          top: 0;
+          left: -100%;
+          background: linear-gradient(90deg, transparent, rgba(255,255,255,0.08), transparent);
+          transition: left 0.8s ease;
+        }
+
+        .nav-link::after {
+          content: '';
+          position: absolute;
+          left: 8px;
+          right: 8px;
+          bottom: 2px;
+          height: 2px;
+          background: #fff;
+          transform: scaleX(0);
+          transform-origin: center;
+          transition: transform 0.3s cubic-bezier(.22,1,.36,1);
+        }
+
+        .nav-link:hover {
+          color: #fff !important;
+          transform: translateY(-1px) scale(1.015);
+          background-color: rgba(255,255,255,0.04);
+        }
+
+        .nav-link:hover::before {
+          left: 100%;
+        }
+
+        .nav-link:hover::after {
+          transform: scaleX(1);
+        }
+
+        .nav-link:active {
+          transform: scale(0.94);
+        }
+
+        .card-projeto {
+          position: relative;
+          overflow: hidden;
+          animation: cardAppear 0.9s cubic-bezier(.16,1,.3,1) both;
+          transition: transform 0.55s cubic-bezier(.16,1,.3,1), box-shadow 0.4s ease, border-color 0.4s ease;
+        }
+
+        .card-projeto::before {
+          content: '';
+          position: absolute;
+          top: 0;
+          left: -100%;
+          width: 60%;
+          height: 100%;
+          background: linear-gradient(90deg, transparent, rgba(255,255,255,0.07), transparent);
+          transform: skewX(-20deg);
+          pointer-events: none;
+          z-index: 2;
+        }
+
+        .card-projeto:hover::before {
+          animation: shine 0.8s ease;
+        }
+
+        .card-projeto:hover {
+          transform: translateY(-5px) scale(1.012);
+          box-shadow: 0 25px 50px rgba(0,0,0,0.65), 0 0 25px rgba(255,255,255,0.05);
+          border-color: rgba(255,255,255,0.25) !important;
+        }
+
+        .card-projeto:active {
+          transform: translateY(-4px) scale(0.99);
+        }
+
+        .card-destaque {
+          transition: transform 0.6s cubic-bezier(.16,1,.3,1), box-shadow 0.45s ease, border-color 0.45s ease;
+        }
+
+        .card-destaque:hover {
+          transform: translateY(-4px) scale(1.008);
+          box-shadow: 0 30px 70px rgba(0,0,0,0.85), 0 0 35px rgba(255,255,255,0.07);
+          border-color: rgba(255,255,255,0.3) !important;
+        }
+
+        .cert-item {
+          transition: transform 0.45s cubic-bezier(.16,1,.3,1), border-color 0.3s ease, background-color 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .cert-item:hover {
+          transform: translateX(4px) scale(1.008);
+          border-color: rgba(255,255,255,0.22) !important;
+          background-color: rgba(30,30,30,0.95) !important;
+          box-shadow: 0 10px 25px rgba(0,0,0,0.45);
+        }
+
+        .img-hover-zoom {
+          transition: transform 0.9s cubic-bezier(.16,1,.3,1), filter 0.5s ease;
+        }
+
+        .img-hover-zoom:hover {
+          transform: scale(1.04);
+          filter: brightness(1.08) contrast(1.05);
+        }
+
+        .tech-tag {
+          transition: transform 0.25s ease, background-color 0.25s ease, border-color 0.25s ease;
+        }
+
+        .tech-tag:hover {
+          transform: translateY(-2px);
+          background-color: rgba(255,255,255,0.09) !important;
+          border-color: rgba(255,255,255,0.2) !important;
+        }
+
+        .social-link {
+          display: inline-block;
+          transition: transform 0.45s cubic-bezier(.16,1,.3,1), background-color 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+        }
+
+        .social-link:hover {
+          transform: translateY(-3px) scale(1.02);
+          background-color: rgba(255,255,255,0.12);
+          border-color: rgba(255,255,255,0.25) !important;
+          box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+        }
+
+        .social-link:active {
+          transform: scale(0.95);
+        }
+
+        .zoom-overlay-img {
+          animation: fadeIn 0.3s ease;
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+          *, *::before, *::after {
+            animation: none !important;
+            transition: none !important;
+          }
+
+          .hero-item, .reveal-section {
+            opacity: 1 !important;
+            transform: none !important;
+          }
+        }
+      `}</style>
 
       <div
         style={{
@@ -201,9 +470,10 @@ export default function App() {
         />
       </div>
 
-      
+
 
       <nav
+        className="main-navbar"
         style={{
           position: 'fixed',
           top: 0,
@@ -220,7 +490,8 @@ export default function App() {
           flexWrap: 'wrap',
           padding: '8px 10px',
           boxSizing: 'border-box',
-          zIndex: 100
+          zIndex: 100,
+          animation: 'fadeIn 0.6s ease'
         }}
       >
         <button
@@ -272,7 +543,7 @@ export default function App() {
         </button>
       </nav>
 
-      
+
 
       <div
         style={{
@@ -289,7 +560,7 @@ export default function App() {
         }}
       >
 
-    
+
 
         <section
           id="inicio"
@@ -305,13 +576,12 @@ export default function App() {
           }}
         >
           <div
-            className="avatar-container"
+            className={`avatar-container hero-item${heroVisible ? ' is-visible' : ''}`}
             style={{
               width: '200px',
               height: '200px',
               borderRadius: '50%',
               border: '2px solid rgba(255, 255, 255, 0.8)',
-              boxShadow: '0 0 25px rgba(255, 255, 255, 0.2)',
               marginBottom: '20px',
               overflow: 'hidden',
               display: 'flex',
@@ -338,31 +608,37 @@ export default function App() {
           </div>
 
           <h1
+            className={`hero-item${heroVisible ? ' is-visible' : ''}`}
             style={{
               fontSize: 'calc(1.8rem + 1vw)',
               fontWeight: '700',
               margin: '0 0 8px 0',
-              textShadow: '0 0 15px rgba(255,255,255,0.3)'
+              textShadow: '0 0 15px rgba(255,255,255,0.3)',
+              transitionDelay: '0.12s'
             }}
           >
             Luiz Jardel
           </h1>
 
           <p
+            className={`hero-item${heroVisible ? ' is-visible' : ''}`}
             style={{
               fontSize: '1.1rem',
               color: '#ffffff',
-              margin: '0'
+              margin: '0',
+              transitionDelay: '0.24s'
             }}
           >
             Desenvolvedor Back-end | Java & Spring Boot
           </p>
         </section>
 
-    
+
 
         <section
           id="sobre"
+          ref={sobreRef}
+          className="reveal-section"
           style={{
             minHeight: '65vh',
             width: '100%',
@@ -453,11 +729,11 @@ export default function App() {
                 </h4>
 
                 <div style={techContainerStyle}>
-                  <span style={techTagStyle}>Java</span>
-                  <span style={techTagStyle}>Spring Boot</span>
-                  <span style={techTagStyle}>PostgreSQL</span>
-                  <span style={techTagStyle}>SQL</span>
-                  <span style={techTagStyle}>Docker</span>
+                  <span className="tech-tag" style={techTagStyle}>Java</span>
+                  <span className="tech-tag" style={techTagStyle}>Spring Boot</span>
+                  <span className="tech-tag" style={techTagStyle}>PostgreSQL</span>
+                  <span className="tech-tag" style={techTagStyle}>SQL</span>
+                  <span className="tech-tag" style={techTagStyle}>Docker</span>
                 </div>
               </div>
 
@@ -467,21 +743,23 @@ export default function App() {
                 </h4>
 
                 <div style={techContainerStyle}>
-                  <span style={techTagStyle}>HTML</span>
-                  <span style={techTagStyle}>CSS</span>
-                  <span style={techTagStyle}>JavaScript</span>
-                  <span style={techTagStyle}>React</span>
-                  <span style={techTagStyle}>TypeScript</span>
+                  <span className="tech-tag" style={techTagStyle}>HTML</span>
+                  <span className="tech-tag" style={techTagStyle}>CSS</span>
+                  <span className="tech-tag" style={techTagStyle}>JavaScript</span>
+                  <span className="tech-tag" style={techTagStyle}>React</span>
+                  <span className="tech-tag" style={techTagStyle}>TypeScript</span>
                 </div>
               </div>
             </div>
           </div>
         </section>
 
-      
+
 
         <section
           id="certificados"
+          ref={certificadosRef}
+          className="reveal-section"
           style={{
             minHeight: '50vh',
             width: '100%',
@@ -515,6 +793,7 @@ export default function App() {
             {meusCertificados.map((cert) => (
               <div
                 key={cert.id}
+                className="cert-item"
                 onClick={() =>
                   cert.imagem && setImagemZoom(cert.imagem)
                 }
@@ -528,7 +807,6 @@ export default function App() {
                   alignItems: 'center',
                   gap: '15px',
                   cursor: cert.imagem ? 'zoom-in' : 'default',
-                  transition: 'transform 0.2s, border-color 0.2s',
                   boxShadow: '0 4px 15px rgba(0,0,0,0.3)',
                   backdropFilter: 'blur(8px)'
                 }}
@@ -598,10 +876,12 @@ export default function App() {
           </div>
         </section>
 
-        
+
 
         <section
           id="destaque"
+          ref={destaqueRef}
+          className="reveal-section"
           style={{
             minHeight: '70vh',
             width: '100%',
@@ -711,9 +991,9 @@ export default function App() {
             </p>
 
             <div style={techContainerStyle}>
-              <span style={techTagStyle}>HTML</span>
-              <span style={techTagStyle}>CSS</span>
-              <span style={techTagStyle}>JavaScript</span>
+              <span className="tech-tag" style={techTagStyle}>HTML</span>
+              <span className="tech-tag" style={techTagStyle}>CSS</span>
+              <span className="tech-tag" style={techTagStyle}>JavaScript</span>
             </div>
           </div>
         </section>
@@ -721,6 +1001,8 @@ export default function App() {
 
         <section
           id="galeria"
+          ref={galeriaRef}
+          className="reveal-section"
           style={{
             minHeight: '65vh',
             width: '100%',
@@ -771,7 +1053,7 @@ export default function App() {
                 }}
               >
 
-              
+
 
                 {proj.imagem ? (
                   <div
@@ -824,7 +1106,7 @@ export default function App() {
                   </div>
                 )}
 
-                
+
 
                 <div style={{ padding: '17px' }}>
 
@@ -866,7 +1148,7 @@ export default function App() {
                     {proj.descricao}
                   </p>
 
-                  
+
 
                   <div style={techContainerStyle}>
                     {proj.tecnologias.map(
@@ -886,10 +1168,11 @@ export default function App() {
           </div>
         </section>
 
-     
 
         <section
           id="contato"
+          ref={contatoRef}
+          className="reveal-section"
           style={{
             minHeight: '55vh',
             display: 'flex',
@@ -976,7 +1259,7 @@ export default function App() {
         </section>
       </div>
 
-  
+
 
       {imagemZoom && (
         <div
@@ -995,7 +1278,8 @@ export default function App() {
             cursor: 'zoom-out',
             backdropFilter: 'blur(6px)',
             padding: '10px',
-            boxSizing: 'border-box'
+            boxSizing: 'border-box',
+            animation: 'fadeIn 0.2s ease'
           }}
         >
           <button
@@ -1008,8 +1292,11 @@ export default function App() {
               border: 'none',
               color: '#fff',
               fontSize: '2.5rem',
-              cursor: 'pointer'
+              cursor: 'pointer',
+              transition: 'transform 0.2s ease'
             }}
+            onMouseEnter={(e) => (e.currentTarget.style.transform = 'scale(1.15) rotate(90deg)')}
+            onMouseLeave={(e) => (e.currentTarget.style.transform = 'scale(1) rotate(0deg)')}
           >
             &times;
           </button>
@@ -1017,6 +1304,7 @@ export default function App() {
           <img
             src={imagemZoom}
             alt="Zoom"
+            className="zoom-overlay-img"
             style={{
               maxWidth: '100%',
               maxHeight: '80%',
