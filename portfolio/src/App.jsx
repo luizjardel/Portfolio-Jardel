@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
-import Galaxy from './Galaxy';
-import './Galaxy.css';
+
 
 import minhaFoto from './assets/foto1.jpeg';
 
@@ -16,6 +15,7 @@ import certifAction from './assets/Claude Code in Action.png';
 import certifCode101 from './assets/Claude Code 101.png';
 import certificado from './assets/Imersao Dev com Google Gemini.png';
 import certifingles from './assets/Curso de English .jpeg';
+import LightRays from "./assets/components/LightRays";
 
 export default function App() {
   const [imagemZoom, setImagemZoom] = useState(null);
@@ -184,16 +184,20 @@ export default function App() {
           zIndex: 1
         }}
       >
-        <Galaxy
-          density={0.8}
-          glowIntensity={0.3}
-          saturation={0}
-          hueShift={140}
-          twinkleIntensity={0.3}
-          rotationSpeed={0.05}
-          autoCenterRepulsion={0}
-          starSpeed={0.3}
-          speed={1}
+        <LightRays
+          raysOrigin="top-center"
+          raysColor="#ffffff"
+          raysSpeed={1}
+          lightSpread={0.5}
+          rayLength={3}
+          followMouse={true}
+          mouseInfluence={0.1}
+          noiseAmount={0}
+          distortion={0}
+          className="custom-rays"
+          pulsating={false}
+          fadeDistance={1}
+          saturation={1}
         />
       </div>
 
