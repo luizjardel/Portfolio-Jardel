@@ -17,6 +17,23 @@ import certificado from './assets/Imersao Dev com Google Gemini.png';
 import certifingles from './assets/Curso de English .jpeg';
 import LightRays from "./assets/components/LightRays";
 
+import {
+  SiSpringboot,
+  SiPostgresql,
+  SiMysql,
+  SiDocker,
+  SiGit,
+  SiMongodb,
+  SiJavascript,
+  SiReact,
+  SiTypescript,
+  SiPython
+} from 'react-icons/si';
+
+// Ícones que não existem (ou foram removidos) em react-icons/si
+import { FaJava } from 'react-icons/fa';
+import { TbBrandCSharp } from 'react-icons/tb';
+
 /**
  * Hook simples de "scroll reveal": observa um elemento e, quando ele entra
  * na viewport, adiciona a classe "is-visible" (dispara a transição do CSS).
@@ -404,6 +421,18 @@ export default function App() {
           transition: transform 0.25s ease, background-color 0.25s ease, border-color 0.25s ease;
         }
 
+        .stack-icon {
+          color: #b5b5b5;
+          transition: transform 0.25s ease, background-color 0.25s ease, border-color 0.25s ease, color 0.25s ease;
+        }
+
+        .stack-icon:hover {
+          color: #fff;
+          transform: translateY(-3px);
+          background: rgba(255,255,255,0.1) !important;
+          border-color: rgba(255,255,255,0.2) !important;
+        }
+
         .tech-tag:hover {
           transform: translateY(-2px);
           background-color: rgba(255,255,255,0.09) !important;
@@ -715,41 +744,122 @@ export default function App() {
             </p>
 
 
+            <h3
+              style={{
+                fontSize: '1.05rem',
+                fontWeight: '600',
+                color: '#fff',
+                margin: '0 0 16px 0'
+              }}
+            >
+              Minhas Stacks
+            </h3>
+
             <div
               style={{
                 display: 'grid',
-                gridTemplateColumns:
-                  'repeat(auto-fit, minmax(200px, 1fr))',
-                gap: '20px'
+                gridTemplateColumns: 'repeat(auto-fit, minmax(145px, 1fr))',
+                gap: '12px'
               }}
             >
-              <div>
-                <h4 style={sectionTitleStyle}>
-                  Foco Principal — Back-end
-                </h4>
+              {[
+                {
+                  titulo: 'Back-end',
+                  tecnologias: [
+                    { nome: 'Java', Icone: FaJava, cor: '#E76F00' },
+                    { nome: 'Spring Boot', Icone: SiSpringboot, cor: '#6DB33F' }
+                  ]
+                },
+                {
+                  titulo: 'Front-end',
+                  tecnologias: [
+                    { nome: 'JavaScript', Icone: SiJavascript, cor: '#F7DF1E' },
+                    { nome: 'React', Icone: SiReact, cor: '#61DAFB' },
+                    { nome: 'TypeScript', Icone: SiTypescript, cor: '#3178C6' }
+                  ]
+                },
+                {
+                  titulo: 'Banco de dados e ferramentas',
+                  tecnologias: [
+                    { nome: 'PostgreSQL', Icone: SiPostgresql, cor: '#4169E1' },
+                    { nome: 'MySQL', Icone: SiMysql, cor: '#4479A1' },
+                    { nome: 'MongoDB', Icone: SiMongodb, cor: '#47A248' },
+                    { nome: 'Docker', Icone: SiDocker, cor: '#2496ED' },
+                    { nome: 'Git', Icone: SiGit, cor: '#F05032' }
+                  ]
+                },
+                {
+                  titulo: 'Em aprendizado',
+                  tecnologias: [
+                    { nome: 'Python', Icone: SiPython, cor: '#3776AB' },
+                    { nome: 'C#', Icone: TbBrandCSharp, cor: '#9B4F96' }
+                  ]
+                }
+              ].map((grupo) => (
+                <div
+                  key={grupo.titulo}
+                  style={{
+                    background: 'rgba(255,255,255,0.035)',
+                    border: '1px solid rgba(255,255,255,0.09)',
+                    borderRadius: '12px',
+                    padding: '14px',
+                    minWidth: 0
+                  }}
+                >
+                  <h4
+                    style={{
+                      color: '#aaa',
+                      fontSize: '0.76rem',
+                      fontWeight: '600',
+                      margin: '0 0 12px 0'
+                    }}
+                  >
+                    {grupo.titulo}
+                  </h4>
 
-                <div style={techContainerStyle}>
-                  <span className="tech-tag" style={techTagStyle}>Java</span>
-                  <span className="tech-tag" style={techTagStyle}>Spring Boot</span>
-                  <span className="tech-tag" style={techTagStyle}>PostgreSQL</span>
-                  <span className="tech-tag" style={techTagStyle}>SQL</span>
-                  <span className="tech-tag" style={techTagStyle}>Docker</span>
+                  <div
+                    style={{
+                      display: 'flex',
+                      flexWrap: 'wrap',
+                      gap: '9px'
+                    }}
+                  >
+                    {grupo.tecnologias.map(({ nome, Icone }) => (
+                      <div
+                        key={nome}
+                        title={nome}
+                        aria-label={nome}
+                        style={{
+                          width: '42px',
+                          height: '42px',
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          borderRadius: '10px',
+                          background: 'rgba(255,255,255,0.045)',
+                          border: '1px solid rgba(255,255,255,0.08)',
+                          transition: 'transform 0.25s ease, background 0.25s ease',
+                          cursor: 'default'
+                        }}
+                        className="stack-icon"
+                      >
+                        <Icone size={23} color="currentColor" aria-hidden="true" />
+                      </div>
+                    ))}
+                  </div>
+
+                  <p
+                    style={{
+                      fontSize: '0.7rem',
+                      color: '#777',
+                      margin: '10px 0 0 0',
+                      lineHeight: '1.4'
+                    }}
+                  >
+                    {grupo.tecnologias.map((tech) => tech.nome).join(' · ')}
+                  </p>
                 </div>
-              </div>
-
-              <div>
-                <h4 style={sectionTitleStyle}>
-                  Conhecimentos — Front-end
-                </h4>
-
-                <div style={techContainerStyle}>
-                  <span className="tech-tag" style={techTagStyle}>HTML</span>
-                  <span className="tech-tag" style={techTagStyle}>CSS</span>
-                  <span className="tech-tag" style={techTagStyle}>JavaScript</span>
-                  <span className="tech-tag" style={techTagStyle}>React</span>
-                  <span className="tech-tag" style={techTagStyle}>TypeScript</span>
-                </div>
-              </div>
+              ))}
             </div>
           </div>
         </section>
