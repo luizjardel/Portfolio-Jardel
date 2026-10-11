@@ -27,7 +27,8 @@ import {
   SiJavascript,
   SiReact,
   SiTypescript,
-  SiPython
+  SiPython,
+  SiRust
 } from 'react-icons/si';
 
 // Ícones que não existem (ou foram removidos) em react-icons/si
@@ -767,7 +768,8 @@ export default function App() {
                   titulo: 'Back-end',
                   tecnologias: [
                     { nome: 'Java', Icone: FaJava, cor: '#E76F00' },
-                    { nome: 'Spring Boot', Icone: SiSpringboot, cor: '#6DB33F' }
+                    { nome: 'Spring Boot', Icone: SiSpringboot, cor: '#6DB33F' },
+                    { nome: 'Rust', Icone: SiRust, cor: '#DE8C00' }
                   ]
                 },
                 {
