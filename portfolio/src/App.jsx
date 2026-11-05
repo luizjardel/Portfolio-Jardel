@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef } from 'react';
 
 
 import minhaFoto from './assets/foto1.jpeg';
@@ -17,6 +17,7 @@ import certificado from './assets/Imersao Dev com Google Gemini.png';
 import certifingles from './assets/Curso de English .jpeg';
 import LightRays from "./assets/components/LightRays";
 
+
 import {
   SiSpringboot,
   SiPostgresql,
@@ -28,7 +29,7 @@ import {
   SiReact,
   SiTypescript,
   SiPython,
-  SiRust
+  SiAngular,
 } from 'react-icons/si';
 
 // Ícones que não existem (ou foram removidos) em react-icons/si
@@ -769,7 +770,7 @@ export default function App() {
                   tecnologias: [
                     { nome: 'Java', Icone: FaJava, cor: '#E76F00' },
                     { nome: 'Spring Boot', Icone: SiSpringboot, cor: '#6DB33F' },
-                    { nome: 'Rust', Icone: SiRust, cor: '#DE8C00' }
+                    { nome: 'Python', Icone: SiPython, cor: '#3776AB' }
                   ]
                 },
                 {
@@ -777,7 +778,8 @@ export default function App() {
                   tecnologias: [
                     { nome: 'JavaScript', Icone: SiJavascript, cor: '#F7DF1E' },
                     { nome: 'React', Icone: SiReact, cor: '#61DAFB' },
-                    { nome: 'TypeScript', Icone: SiTypescript, cor: '#3178C6' }
+                    { nome: 'TypeScript', Icone: SiTypescript, cor: '#3178C6' },
+                    { nome: 'Angular', Icone: SiAngular, cor: '#DD0031' }
                   ]
                 },
                 {
@@ -793,7 +795,6 @@ export default function App() {
                 {
                   titulo: 'Em aprendizado',
                   tecnologias: [
-                    { nome: 'Python', Icone: SiPython, cor: '#3776AB' },
                     { nome: 'C#', Icone: TbBrandCSharp, cor: '#9B4F96' }
                   ]
                 }
@@ -1441,14 +1442,6 @@ const navLinkStyle = {
   cursor: 'pointer',
   padding: '6px 8px',
   borderRadius: '4px'
-};
-
-const sectionTitleStyle = {
-  fontSize: '0.75rem',
-  color: '#888',
-  margin: '0 0 8px 0',
-  textTransform: 'uppercase',
-  letterSpacing: '0.5px'
 };
 
 const techContainerStyle = {
