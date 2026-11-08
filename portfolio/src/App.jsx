@@ -5,10 +5,15 @@ import minhaFoto from './assets/foto1.jpeg';
 
 import printSuplementos from './assets/site.png';
 import printProjeto2 from './assets/gerador de css.jpeg';
-import printProjeto3 from './assets/Calculadora.png';
 import printProjeto4 from './assets/Sistema de Agendamento.png';
 import printProjeto5 from './assets/Almoxarifado.jpeg';
 import printProjeto6 from './assets/I.A.jpeg';
+import printProjeto7 from './assets/Bot Vagas.png';
+import printProjeto8 from './assets/Agente IA.png';
+
+import certifSantander from './assets/Bootcamp Santander.jpeg';
+import certifEndian from './assets/Endian Firewall certificado.jpg';
+import certifItau from './assets/Itau Bootcamp.png';
 
 import certifClaude101 from './assets/Claude 101.png';
 import certifAction from './assets/Claude Code in Action.png';
@@ -77,7 +82,7 @@ export default function App() {
   const contatoRef = useReveal();
 
   useEffect(() => {
-    // Dispara o fade-in escalonado do herói assim que o componente monta.
+    
     const timer = setTimeout(() => setHeroVisible(true), 80);
     return () => clearTimeout(timer);
   }, []);
@@ -137,7 +142,33 @@ export default function App() {
       cargaHoraria: '100 h',
       ano: '2025',
       imagem: certifingles
-    }
+    },
+    {
+  id: 6,
+  titulo: 'Santander 2026 - AI Java Back-end',
+  instituicao: 'Santander em parceria com DIO',
+  cargaHoraria: '49 h',
+  ano: '2026',
+  imagem: certifSantander
+},
+
+{
+  id: 7,
+  titulo: 'Itaú - Java com Inteligência Artificial',
+  instituicao: 'Itaú em parceria com DIO',
+  cargaHoraria: '45 h',
+  ano: '2026',
+  imagem: certifItau
+},
+
+{
+  id: 8,
+  titulo: 'Endian Firewall Community - Administração Profissional',
+  instituicao: 'Udemy',
+  cargaHoraria: '14,5 h',
+  ano: '2026',
+  imagem: certifEndian
+}
   ];
 
 
@@ -191,6 +222,35 @@ export default function App() {
     },
 
     {
+  id: 7,
+  tipo: 'PROJETO',
+  titulo: 'Bot de Vagas no Telegram',
+  imagem: printProjeto7,
+  descricao:
+    'Bot desenvolvido em Python que envia vagas de tecnologia automaticamente pelo Telegram. O projeto trabalha com automação, integração com a API do Telegram e organização das informações das vagas para o envio aos usuários.',
+  tecnologias: [
+    'Python',
+    'Telegram Bot API'
+  ]
+},
+{
+  id: 8,
+  tipo: 'PROJETO',
+  titulo: 'Agente de I.A para Auditoria de Código',
+  imagem: printProjeto8,
+  descricao:
+    'Agente autônomo local (local-first) de I.A para auditoria de código estático, refatoração baseada em princípios Clean Code e SOLID e identificação de vulnerabilidades. Os fluxos de agentes são orquestrados com CrewAI e Ollama, executando o modelo Llama 3.2 localmente, com respostas formatadas em Markdown. A análise é automatizada sem depender de APIs pagas em nuvem, garantindo total privacidade do código-fonte.',
+  tecnologias: [
+    'Python',
+    'CrewAI',
+    'Ollama',
+    'Llama 3.2',
+    'Clean Code',
+    'SOLID'
+  ]
+},
+
+    {
       id: 5,
       tipo: 'PROJETO',
       titulo: 'Gerador de CSS com IA',
@@ -203,22 +263,23 @@ export default function App() {
         'JavaScript',
         'IA'
       ]
+      
     },
-
     {
-      id: 6,
+      id: 3,
       tipo: 'PROJETO',
-      titulo: 'Calculadora Simples em Java',
+      titulo: 'ChatBot de Texto com I.A',
+      imagem: printProjeto6,
       descricao:
-        'Aplicação desenvolvida em Java utilizando Swing e AWT para realizar operações matemáticas básicas. O projeto trabalha conceitos de Programação Orientada a Objetos, interface gráfica e processamento das entradas do usuário.',
-      imagem: printProjeto3,
+        'I.A Feita Para de Texto feito com o Spring AI,Java e Spring Boot. A aplicação permite que os usuários interajam com um chatbot de texto, enviando mensagens e recebendo respostas geradas por inteligência artificial. O projeto explora conceitos de processamento de linguagem natural, integração com APIs externas e desenvolvimento de back-end robusto.',
       tecnologias: [
         'Java',
-        'Swing',
-        'AWT',
-        'POO'
+        'Spring Boot',
+        'REST API',
+        'Banco de Dados'
       ]
-    }
+    },
+
   ];
 
   return (
@@ -234,8 +295,7 @@ export default function App() {
       }}
     >
 
-      {/* Estilos de animação: mantidos num único bloco para ficar fácil
-          de ajustar depois. Respeita prefers-reduced-motion no final. */}
+
       <style>{`
         @keyframes fadeInUp {
           from { opacity: 0; transform: translateY(35px); }
