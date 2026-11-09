@@ -38,7 +38,7 @@ import {
 } from 'react-icons/si';
 
 // Ícones que não existem (ou foram removidos) em react-icons/si
-import { FaJava } from 'react-icons/fa';
+import { FaJava, FaLinux, FaAws } from 'react-icons/fa';
 import { TbBrandCSharp } from 'react-icons/tb';
 
 /**
@@ -74,6 +74,12 @@ function useReveal() {
 export default function App() {
   const [imagemZoom, setImagemZoom] = useState(null);
   const [heroVisible, setHeroVisible] = useState(false);
+  const [secaoAtiva, setSecaoAtiva] = useState('inicio');
+  const [mostrarTopo, setMostrarTopo] = useState(false);
+
+  const barraRef = useRef(null);
+  const thumbRef = useRef(null);
+  const dragRef = useRef(null);
 
   const sobreRef = useReveal();
   const certificadosRef = useReveal();
@@ -82,19 +88,173 @@ export default function App() {
   const contatoRef = useReveal();
 
   useEffect(() => {
-    
     const timer = setTimeout(() => setHeroVisible(true), 80);
     return () => clearTimeout(timer);
   }, []);
 
+  // Barra de progresso + botão "voltar ao topo".
+  // Usa requestAnimationFrame para atualizar no máximo 1x por frame
+  // e escreve direto no DOM (sem re-render a cada pixel rolado).
+  useEffect(() => {
+    let ticking = false;
+
+    const atualizar = () => {
+      const max =
+        document.documentElement.scrollHeight - window.innerHeight;
+      const progresso =
+        max > 0 ? Math.min(window.scrollY / max, 1) : 0;
+
+      if (barraRef.current) {
+        barraRef.current.style.transform = `scaleX(${progresso})`;
+      }
+
+      setMostrarTopo(window.scrollY > 600);
+
+      // Barra de rolagem customizada: tamanho e posição do "polegar"
+      const thumb = thumbRef.current;
+      if (thumb) {
+        const docH = document.documentElement.scrollHeight;
+        const viewH = window.innerHeight;
+
+        if (max <= 0) {
+          thumb.style.opacity = '0';
+        } else {
+          const h = Math.max((viewH / docH) * viewH, 48);
+          const y = (window.scrollY / max) * (viewH - h);
+          thumb.style.opacity = '1';
+          thumb.style.height = `${h}px`;
+          thumb.style.transform = `translateY(${y}px)`;
+        }
+      }
+
+      ticking = false;
+    };
+
+    const onScroll = () => {
+      if (!ticking) {
+        ticking = true;
+        requestAnimationFrame(atualizar);
+      }
+    };
+
+    atualizar();
+    window.addEventListener('scroll', onScroll, { passive: true });
+    window.addEventListener('resize', onScroll);
+
+    // Recalcula quando a altura da página muda (imagens carregando etc.)
+    const ro = new ResizeObserver(onScroll);
+    ro.observe(document.body);
+
+    return () => {
+      window.removeEventListener('scroll', onScroll);
+      window.removeEventListener('resize', onScroll);
+      ro.disconnect();
+    };
+  }, []);
+
+  // Descobre qual seção está no meio da tela para destacar no menu.
+  useEffect(() => {
+    const ids = [
+      'inicio',
+      'sobre',
+      'certificados',
+      'destaque',
+      'galeria',
+      'contato'
+    ];
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((e) => {
+          if (e.isIntersecting) setSecaoAtiva(e.target.id);
+        });
+      },
+      { rootMargin: '-45% 0px -50% 0px' }
+    );
+
+    ids.forEach((id) => {
+      const el = document.getElementById(id);
+      if (el) observer.observe(el);
+    });
+
+    return () => observer.disconnect();
+  }, []);
+
+  // Trava a rolagem da página enquanto o zoom da imagem está aberto.
+  useEffect(() => {
+    document.documentElement.style.overflow = imagemZoom ? 'hidden' : '';
+    return () => {
+      document.documentElement.style.overflow = '';
+    };
+  }, [imagemZoom]);
+
+  // Marca a página como "rolando" para acender a barra de rolagem.
+  useEffect(() => {
+    let timer;
+
+    const onScroll = () => {
+      document.documentElement.classList.add('is-scrolling');
+      clearTimeout(timer);
+      timer = setTimeout(() => {
+        document.documentElement.classList.remove('is-scrolling');
+      }, 700);
+    };
+
+    window.addEventListener('scroll', onScroll, { passive: true });
+
+    return () => {
+      window.removeEventListener('scroll', onScroll);
+      clearTimeout(timer);
+      document.documentElement.classList.remove('is-scrolling');
+    };
+  }, []);
+
+  // A suavização fica por conta do CSS (scroll-behavior), que também
+  // respeita quem desativa animações no sistema.
   const scrollToSection = (id) => {
     const element = document.getElementById(id);
+    if (element) element.scrollIntoView();
+  };
 
-    if (element) {
-      element.scrollIntoView({
-        behavior: 'smooth'
-      });
-    }
+
+  // Arrastar a barra de rolagem customizada
+  const iniciarArraste = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    const thumb = thumbRef.current;
+    if (!thumb) return;
+    thumb.setPointerCapture(e.pointerId);
+    thumb.classList.add('is-dragging');
+    dragRef.current = { startY: e.clientY, startScroll: window.scrollY };
+  };
+
+  const arrastar = (e) => {
+    const d = dragRef.current;
+    const thumb = thumbRef.current;
+    if (!d || !thumb) return;
+
+    const viewH = window.innerHeight;
+    const max = document.documentElement.scrollHeight - viewH;
+    const trilho = viewH - thumb.offsetHeight;
+    if (trilho <= 0) return;
+
+    window.scrollTo({
+      top: d.startScroll + (e.clientY - d.startY) * (max / trilho),
+      behavior: 'instant'
+    });
+  };
+
+  const soltarArraste = () => {
+    dragRef.current = null;
+    if (thumbRef.current) thumbRef.current.classList.remove('is-dragging');
+  };
+
+  // Clicar no trilho (fora do polegar) leva a página até aquele ponto
+  const clicarTrilho = (e) => {
+    if (e.target !== e.currentTarget) return;
+    const viewH = window.innerHeight;
+    const max = document.documentElement.scrollHeight - viewH;
+    window.scrollTo({ top: (e.clientY / viewH) * max, behavior: 'smooth' });
   };
 
 
@@ -143,32 +303,33 @@ export default function App() {
       ano: '2025',
       imagem: certifingles
     },
+
     {
-  id: 6,
-  titulo: 'Santander 2026 - AI Java Back-end',
-  instituicao: 'Santander em parceria com DIO',
-  cargaHoraria: '49 h',
-  ano: '2026',
-  imagem: certifSantander
-},
+      id: 6,
+      titulo: 'Santander 2026 - AI Java Back-end',
+      instituicao: 'Santander em parceria com DIO',
+      cargaHoraria: '49 h',
+      ano: '2026',
+      imagem: certifSantander
+    },
 
-{
-  id: 7,
-  titulo: 'Itaú - Java com Inteligência Artificial',
-  instituicao: 'Itaú em parceria com DIO',
-  cargaHoraria: '45 h',
-  ano: '2026',
-  imagem: certifItau
-},
+    {
+      id: 7,
+      titulo: 'Itaú - Java com Inteligência Artificial',
+      instituicao: 'Itaú em parceria com DIO',
+      cargaHoraria: '45 h',
+      ano: '2026',
+      imagem: certifItau
+    },
 
-{
-  id: 8,
-  titulo: 'Endian Firewall Community - Administração Profissional',
-  instituicao: 'Udemy',
-  cargaHoraria: '14,5 h',
-  ano: '2026',
-  imagem: certifEndian
-}
+    {
+      id: 8,
+      titulo: 'Endian Firewall Community - Administração Profissional',
+      instituicao: 'Udemy',
+      cargaHoraria: '14,5 h',
+      ano: '2026',
+      imagem: certifEndian
+    }
   ];
 
 
@@ -190,7 +351,6 @@ export default function App() {
         'REST API'
       ]
     },
-
 
     {
       id: 3,
@@ -222,33 +382,34 @@ export default function App() {
     },
 
     {
-  id: 7,
-  tipo: 'PROJETO',
-  titulo: 'Bot de Vagas no Telegram',
-  imagem: printProjeto7,
-  descricao:
-    'Bot desenvolvido em Python que envia vagas de tecnologia automaticamente pelo Telegram. O projeto trabalha com automação, integração com a API do Telegram e organização das informações das vagas para o envio aos usuários.',
-  tecnologias: [
-    'Python',
-    'Telegram Bot API'
-  ]
-},
-{
-  id: 8,
-  tipo: 'PROJETO',
-  titulo: 'Agente de I.A para Auditoria de Código',
-  imagem: printProjeto8,
-  descricao:
-    'Agente autônomo local (local-first) de I.A para auditoria de código estático, refatoração baseada em princípios Clean Code e SOLID e identificação de vulnerabilidades. Os fluxos de agentes são orquestrados com CrewAI e Ollama, executando o modelo Llama 3.2 localmente, com respostas formatadas em Markdown. A análise é automatizada sem depender de APIs pagas em nuvem, garantindo total privacidade do código-fonte.',
-  tecnologias: [
-    'Python',
-    'CrewAI',
-    'Ollama',
-    'Llama 3.2',
-    'Clean Code',
-    'SOLID'
-  ]
-},
+      id: 7,
+      tipo: 'PROJETO',
+      titulo: 'Bot de Vagas no Telegram',
+      imagem: printProjeto7,
+      descricao:
+        'Bot desenvolvido em Python que envia vagas de tecnologia automaticamente pelo Telegram. O projeto trabalha com automação, integração com a API do Telegram e organização das informações das vagas para o envio aos usuários.',
+      tecnologias: [
+        'Python',
+        'Telegram Bot API'
+      ]
+    },
+
+    {
+      id: 8,
+      tipo: 'PROJETO',
+      titulo: 'Agente de I.A para Auditoria de Código',
+      imagem: printProjeto8,
+      descricao:
+        'Agente autônomo local (local-first) de I.A para auditoria de código estático, refatoração baseada em princípios Clean Code e SOLID e identificação de vulnerabilidades. Os fluxos de agentes são orquestrados com CrewAI e Ollama, executando o modelo Llama 3.2 localmente, com respostas formatadas em Markdown. A análise é automatizada sem depender de APIs pagas em nuvem, garantindo total privacidade do código-fonte.',
+      tecnologias: [
+        'Python',
+        'CrewAI',
+        'Ollama',
+        'Llama 3.2',
+        'Clean Code',
+        'SOLID'
+      ]
+    },
 
     {
       id: 5,
@@ -263,23 +424,7 @@ export default function App() {
         'JavaScript',
         'IA'
       ]
-      
-    },
-    {
-      id: 3,
-      tipo: 'PROJETO',
-      titulo: 'ChatBot de Texto com I.A',
-      imagem: printProjeto6,
-      descricao:
-        'I.A Feita Para de Texto feito com o Spring AI,Java e Spring Boot. A aplicação permite que os usuários interajam com um chatbot de texto, enviando mensagens e recebendo respostas geradas por inteligência artificial. O projeto explora conceitos de processamento de linguagem natural, integração com APIs externas e desenvolvimento de back-end robusto.',
-      tecnologias: [
-        'Java',
-        'Spring Boot',
-        'REST API',
-        'Banco de Dados'
-      ]
-    },
-
+    }
   ];
 
   return (
@@ -289,14 +434,124 @@ export default function App() {
         minHeight: '100vh',
         position: 'relative',
         backgroundColor: '#000',
-        overflowX: 'hidden',
-        overflowY: 'auto',
         fontFamily: '"Segoe UI", Roboto, Helvetica, Arial, sans-serif'
       }}
     >
 
 
       <style>{`
+        /* ---------- Rolagem única, suave e sem bugs ---------- */
+        html {
+          overflow-x: hidden;
+          scroll-behavior: smooth;
+          scrollbar-width: none;
+        }
+
+        /* Esconde a barra nativa: usamos a barra customizada abaixo */
+        html::-webkit-scrollbar { display: none; }
+
+        .custom-scrollbar {
+          position: fixed;
+          top: 0;
+          right: 0;
+          width: 16px;
+          height: 100%;
+          z-index: 120;
+        }
+
+        .custom-scrollbar-thumb {
+          position: absolute;
+          top: 0;
+          right: 4px;
+          width: 6px;
+          min-height: 48px;
+          border-radius: 6px;
+          background: rgba(255,255,255,0.18);
+          cursor: grab;
+          touch-action: none;
+          will-change: transform;
+          transition: background 0.35s ease, width 0.2s ease,
+            box-shadow 0.35s ease, opacity 0.3s ease;
+        }
+
+        .custom-scrollbar:hover .custom-scrollbar-thumb {
+          width: 9px;
+          background: rgba(255,255,255,0.5);
+        }
+
+        /* acende enquanto rola */
+        html.is-scrolling .custom-scrollbar-thumb {
+          background: #ffffff;
+          box-shadow: 0 0 14px rgba(255,255,255,0.55);
+        }
+
+        .custom-scrollbar-thumb.is-dragging {
+          width: 9px;
+          cursor: grabbing;
+          background: #ffffff;
+          box-shadow: 0 0 16px rgba(255,255,255,0.65);
+        }
+
+        /* Celular: a barra nativa já some sozinha, então não mostramos esta */
+        @media (hover: none) {
+          .custom-scrollbar { display: none; }
+        }
+
+        body, #root {
+          margin: 0;
+          padding: 0;
+          width: 100%;
+          max-width: none;
+          height: auto;
+          min-height: 100%;
+          overflow: visible;
+        }
+
+        section[id] { scroll-margin-top: 90px; }
+
+        .scroll-progress {
+          height: 100%;
+          width: 100%;
+          background: linear-gradient(90deg, rgba(255,255,255,0.4), #fff);
+          transform-origin: left;
+          transform: scaleX(0);
+          will-change: transform;
+        }
+
+        .nav-link.is-active { color: #fff !important; }
+        .nav-link.is-active::after { transform: scaleX(1); }
+
+        .back-to-top {
+          position: fixed;
+          right: 18px;
+          bottom: calc(18px + env(safe-area-inset-bottom, 0px));
+          width: 44px;
+          height: 44px;
+          border-radius: 50%;
+          border: 1px solid rgba(255,255,255,0.2);
+          background: rgba(0,0,0,0.7);
+          backdrop-filter: blur(8px);
+          color: #fff;
+          font-size: 1.2rem;
+          cursor: pointer;
+          z-index: 90;
+          opacity: 0;
+          transform: translateY(12px);
+          pointer-events: none;
+          transition: opacity 0.3s ease, transform 0.3s ease;
+        }
+
+        .back-to-top.is-visible {
+          opacity: 1;
+          transform: none;
+          pointer-events: auto;
+        }
+
+        .back-to-top:hover {
+          background: rgba(255,255,255,0.12);
+        }
+
+        /* ---------- Animações ---------- */
         @keyframes fadeInUp {
           from { opacity: 0; transform: translateY(35px); }
           to { opacity: 1; transform: translateY(0); }
@@ -522,6 +777,8 @@ export default function App() {
         }
 
         @media (prefers-reduced-motion: reduce) {
+          html { scroll-behavior: auto; }
+
           *, *::before, *::after {
             animation: none !important;
             transition: none !important;
@@ -534,14 +791,14 @@ export default function App() {
         }
       `}</style>
 
+      {/* Fundo de raios: fixo e sem capturar toque/clique, para nunca
+          atrapalhar a rolagem (principalmente no celular). */}
       <div
         style={{
-          width: '100vw',
-          height: '100vh',
           position: 'fixed',
-          top: 0,
-          left: 0,
-          zIndex: 1
+          inset: 0,
+          zIndex: 1,
+          pointerEvents: 'none'
         }}
       >
         <LightRays
@@ -561,6 +818,43 @@ export default function App() {
         />
       </div>
 
+
+      {/* Barra de rolagem customizada (aparece só em dispositivos com mouse) */}
+      <div className="custom-scrollbar" onPointerDown={clicarTrilho}>
+        <div
+          ref={thumbRef}
+          className="custom-scrollbar-thumb"
+          onPointerDown={iniciarArraste}
+          onPointerMove={arrastar}
+          onPointerUp={soltarArraste}
+          onPointerCancel={soltarArraste}
+        />
+      </div>
+
+      {/* Barra de progresso de leitura */}
+      <div
+        aria-hidden="true"
+        style={{
+          position: 'fixed',
+          top: 0,
+          left: 0,
+          width: '100%',
+          height: '3px',
+          zIndex: 101,
+          pointerEvents: 'none'
+        }}
+      >
+        <div ref={barraRef} className="scroll-progress" />
+      </div>
+
+      {/* Botão de voltar ao topo */}
+      <button
+        onClick={() => scrollToSection('inicio')}
+        aria-label="Voltar ao topo"
+        className={`back-to-top${mostrarTopo ? ' is-visible' : ''}`}
+      >
+        ↑
+      </button>
 
 
       <nav
@@ -585,53 +879,24 @@ export default function App() {
           animation: 'fadeIn 0.6s ease'
         }}
       >
-        <button
-          onClick={() => scrollToSection('inicio')}
-          className="nav-link"
-          style={navLinkStyle}
-        >
-          Início
-        </button>
-
-        <button
-          onClick={() => scrollToSection('sobre')}
-          className="nav-link"
-          style={navLinkStyle}
-        >
-          Sobre
-        </button>
-
-        <button
-          onClick={() => scrollToSection('certificados')}
-          className="nav-link"
-          style={navLinkStyle}
-        >
-          Certificados
-        </button>
-
-        <button
-          onClick={() => scrollToSection('destaque')}
-          className="nav-link"
-          style={navLinkStyle}
-        >
-          Destaque
-        </button>
-
-        <button
-          onClick={() => scrollToSection('galeria')}
-          className="nav-link"
-          style={navLinkStyle}
-        >
-          Projetos
-        </button>
-
-        <button
-          onClick={() => scrollToSection('contato')}
-          className="nav-link"
-          style={navLinkStyle}
-        >
-          Redes
-        </button>
+        {[
+          ['inicio', 'Início'],
+          ['sobre', 'Sobre'],
+          ['certificados', 'Certificados'],
+          ['destaque', 'Destaque'],
+          ['galeria', 'Projetos'],
+          ['contato', 'Redes']
+        ].map(([id, label]) => (
+          <button
+            key={id}
+            onClick={() => scrollToSection(id)}
+            className={`nav-link${secaoAtiva === id ? ' is-active' : ''}`}
+            aria-current={secaoAtiva === id ? 'true' : undefined}
+            style={navLinkStyle}
+          >
+            {label}
+          </button>
+        ))}
       </nav>
 
 
@@ -855,7 +1120,9 @@ export default function App() {
                 {
                   titulo: 'Em aprendizado',
                   tecnologias: [
-                    { nome: 'C#', Icone: TbBrandCSharp, cor: '#9B4F96' }
+                    { nome: 'C#', Icone: TbBrandCSharp, cor: '#9B4F96' },
+                    { nome: 'Linux', Icone: FaLinux, cor: '#FCC624' },
+                    { nome: 'AWS', Icone: FaAws, cor: '#FF9900' }
                   ]
                 }
               ].map((grupo) => (
@@ -1439,10 +1706,7 @@ export default function App() {
           onClick={() => setImagemZoom(null)}
           style={{
             position: 'fixed',
-            top: 0,
-            left: 0,
-            width: '100vw',
-            height: '100vh',
+            inset: 0,
             backgroundColor: 'rgba(0, 0, 0, 0.95)',
             display: 'flex',
             justifyContent: 'center',
@@ -1457,6 +1721,7 @@ export default function App() {
         >
           <button
             onClick={() => setImagemZoom(null)}
+            aria-label="Fechar imagem"
             style={{
               position: 'absolute',
               top: '15px',
