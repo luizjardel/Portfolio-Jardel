@@ -77,7 +77,6 @@ export default function App() {
   const [secaoAtiva, setSecaoAtiva] = useState('inicio');
   const [mostrarTopo, setMostrarTopo] = useState(false);
 
-  const barraRef = useRef(null);
   const thumbRef = useRef(null);
   const dragRef = useRef(null);
 
@@ -92,7 +91,7 @@ export default function App() {
     return () => clearTimeout(timer);
   }, []);
 
-  // Barra de progresso + botão "voltar ao topo".
+  // Barra de rolagem customizada + botão "voltar ao topo".
   // Usa requestAnimationFrame para atualizar no máximo 1x por frame
   // e escreve direto no DOM (sem re-render a cada pixel rolado).
   useEffect(() => {
@@ -101,13 +100,6 @@ export default function App() {
     const atualizar = () => {
       const max =
         document.documentElement.scrollHeight - window.innerHeight;
-      const progresso =
-        max > 0 ? Math.min(window.scrollY / max, 1) : 0;
-
-      if (barraRef.current) {
-        barraRef.current.style.transform = `scaleX(${progresso})`;
-      }
-
       setMostrarTopo(window.scrollY > 600);
 
       // Barra de rolagem customizada: tamanho e posição do "polegar"
@@ -509,15 +501,6 @@ export default function App() {
 
         section[id] { scroll-margin-top: 90px; }
 
-        .scroll-progress {
-          height: 100%;
-          width: 100%;
-          background: linear-gradient(90deg, rgba(255,255,255,0.4), #fff);
-          transform-origin: left;
-          transform: scaleX(0);
-          will-change: transform;
-        }
-
         .nav-link.is-active { color: #fff !important; }
         .nav-link.is-active::after { transform: scaleX(1); }
 
@@ -831,22 +814,6 @@ export default function App() {
         />
       </div>
 
-      {/* Barra de progresso de leitura */}
-      <div
-        aria-hidden="true"
-        style={{
-          position: 'fixed',
-          top: 0,
-          left: 0,
-          width: '100%',
-          height: '3px',
-          zIndex: 101,
-          pointerEvents: 'none'
-        }}
-      >
-        <div ref={barraRef} className="scroll-progress" />
-      </div>
-
       {/* Botão de voltar ao topo */}
       <button
         onClick={() => scrollToSection('inicio')}
@@ -898,6 +865,9 @@ export default function App() {
           </button>
         ))}
       </nav>
+
+
+
 
 
 
