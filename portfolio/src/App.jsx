@@ -1,5 +1,13 @@
-import { useState, useEffect, useRef } from 'react';
-
+import { useState, useEffect } from 'react';
+import {
+  SiSpringboot, SiPostgresql, SiMysql, SiDocker, SiGit, SiMongodb,
+  SiJavascript, SiReact, SiTypescript, SiPython, SiAngular,
+  SiTelegram, SiKotlin, SiUbuntu, SiNestjs
+} from 'react-icons/si';
+import {
+  FaJava, FaLinux, FaAws, FaHtml5, FaCss3Alt,
+  FaGithub, FaLinkedin, FaInstagram, FaYoutube, FaEnvelope
+} from 'react-icons/fa';
 
 import minhaFoto from './assets/foto1.jpeg';
 
@@ -14,1756 +22,794 @@ import printProjeto8 from './assets/Agente IA.png';
 import certifSantander from './assets/Bootcamp Santander.jpeg';
 import certifEndian from './assets/Endian Firewall certificado.jpg';
 import certifItau from './assets/Itau Bootcamp.png';
-
 import certifClaude101 from './assets/Claude 101.png';
 import certifAction from './assets/Claude Code in Action.png';
 import certifCode101 from './assets/Claude Code 101.png';
 import certificado from './assets/Imersao Dev com Google Gemini.png';
 import certifingles from './assets/Curso de English .jpeg';
-import LightRays from "./assets/components/LightRays";
 
+const SECOES = [
+  ['inicio', 'Início'],
+  ['sobre', 'Sobre'],
+  ['projetos', 'Projetos'],
+  ['certificados', 'Certificados'],
+  ['contato', 'Contato']
+];
 
-import {
-  SiSpringboot,
-  SiPostgresql,
-  SiMysql,
-  SiDocker,
-  SiGit,
-  SiMongodb,
-  SiJavascript,
-  SiReact,
-  SiTypescript,
-  SiPython,
-  SiAngular,
-} from 'react-icons/si';
+const SOCIAIS = [
+  ['GitHub', 'https://github.com/luizjardel'],
+  ['LinkedIn', 'https://www.linkedin.com/in/luiz-jardel/?skipRedirect=true'],
+  ['Instagram', 'https://www.instagram.com/dev.jardel/'],
+  ['YouTube', 'https://www.youtube.com/@devjardel'],
+  ['E-mail', 'mailto:luizjardel13@gmail.com']
+];
 
-// Ícones que não existem (ou foram removidos) em react-icons/si
-import { FaJava, FaLinux, FaAws } from 'react-icons/fa';
-import { TbBrandCSharp } from 'react-icons/tb';
+const ICONES_SOCIAIS = {
+  GitHub: FaGithub,
+  LinkedIn: FaLinkedin,
+  Instagram: FaInstagram,
+  YouTube: FaYoutube,
+  'E-mail': FaEnvelope
+};
 
-/**
- * Hook simples de "scroll reveal": observa um elemento e, quando ele entra
- * na viewport, adiciona a classe "is-visible" (dispara a transição do CSS).
- * Cada seção só revela uma vez, então a animação não fica repetindo ao
- * subir e descer a página.
- */
-function useReveal() {
-  const ref = useRef(null);
+const STACK = [
+  ['Back-end', ['Java', 'Spring Boot', 'Spring AI', 'Python']],
+  ['Front-end', ['JavaScript', 'React', 'React Native', 'TypeScript', 'Angular']],
+  ['Bancos de dados', ['PostgreSQL', 'MySQL', 'MongoDB']],
+  ['Infraestrutura', ['Docker', 'Git', 'Ubuntu']],
+  ['Inteligência artificial', ['CrewAI', 'Ollama', 'Llama 3.2', 'Claude Code']],
+  ['Em aprendizado', ['Kotlin', 'Express', 'NestJS', 'Linux', 'AWS']]
+];
 
-  useEffect(() => {
-    const node = ref.current;
-    if (!node) return;
+// Tecnologias sem ícone aparecem só com o nome.
+const ICONES = {
+  Java: FaJava, 'Spring Boot': SiSpringboot, 'Spring AI': SiSpringboot,
+  Python: SiPython, JavaScript: SiJavascript, React: SiReact,
+  'React Native': SiReact, TypeScript: SiTypescript, Angular: SiAngular,
+  PostgreSQL: SiPostgresql, MySQL: SiMysql, MongoDB: SiMongodb,
+  Docker: SiDocker, Git: SiGit, Ubuntu: SiUbuntu, NestJS: SiNestjs,
+  Kotlin: SiKotlin, Linux: FaLinux, AWS: FaAws, HTML: FaHtml5,
+  CSS: FaCss3Alt, 'Telegram Bot API': SiTelegram
+};
 
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) {
-          node.classList.add('is-visible');
-          observer.unobserve(node);
-        }
-      },
-      { threshold: 0.15, rootMargin: '0px 0px -60px 0px' }
-    );
+const FRASES = [
+  'APIs REST',
+  'sistemas com banco de dados',
+  'automações com Python',
+  'agentes de I.A locais'
+];
 
-    observer.observe(node);
-    return () => observer.disconnect();
-  }, []);
-
-  return ref;
+function Tec({ nome }) {
+  const Icone = ICONES[nome];
+  return (
+    <span className="tec">
+      {Icone && <Icone size={16} aria-hidden="true" />}
+      {nome}
+    </span>
+  );
 }
 
+function LinkSocial({ nome, url, className = 'link' }) {
+  const Icone = ICONES_SOCIAIS[nome];
+  return (
+    <a
+      className={`${className} social-item`}
+      href={url}
+      target={url.startsWith('http') ? '_blank' : undefined}
+      rel="noreferrer"
+    >
+      {Icone && <Icone size={17} aria-hidden="true" />}
+      <span>{nome}</span>
+    </a>
+  );
+}
+
+const PROJETOS = [
+  {
+    id: 1,
+    titulo: 'Loja de suplementos',
+    nota: 'Projeto para cliente real',
+    imagem: printSuplementos,
+    descricao:
+      'Aplicação web para uma loja de suplementos. Foi meu primeiro projeto para um cliente real e me permitiu aplicar na prática o que eu estudava.',
+    tecnologias: ['HTML', 'CSS', 'JavaScript'],
+    links: [['Código', 'https://github.com/luizjardel/TITANS-LIFE']]
+  },
+  {
+    id: 2,
+    titulo: 'Almoxarifado compartilhado',
+    nota: 'Hackathon em equipe',
+    imagem: printProjeto5,
+    descricao:
+      'Sistema de gerenciamento de almoxarifado entre empresas. Atuei no back-end, implementando o CRUD de produtos e os módulos de pedidos e transferências de itens.',
+    tecnologias: ['Java', 'Spring Boot', 'PostgreSQL', 'Docker', 'Flyway', 'REST API'],
+    links: [['Código', 'https://github.com/AlissonGCosta/Almoxarifado-Compartilhado']]
+  },
+  {
+    id: 3,
+    titulo: 'Agente de I.A para auditoria de código',
+    imagem: printProjeto8,
+    descricao:
+      'Agente autônomo local para auditoria de código estático, refatoração com Clean Code e SOLID e identificação de vulnerabilidades. Roda o Llama 3.2 na própria máquina, sem APIs pagas e sem expor o código-fonte.',
+    tecnologias: ['Python', 'CrewAI', 'Ollama', 'Llama 3.2'],
+    links: [['Código', 'https://github.com/luizjardel/local-ai-code-reviewer']]
+  },
+  {
+    id: 4,
+    titulo: 'Bot de vagas no Telegram',
+    imagem: printProjeto7,
+    descricao:
+      'Bot em Python que envia vagas de tecnologia automaticamente pelo Telegram, com automação e integração com a API do Telegram.',
+    tecnologias: ['Python', 'Telegram Bot API'],
+    links: [['Código', 'https://github.com/luizjardel/vacancy-monitor']]
+  },
+  {
+    id: 5,
+    titulo: 'Chatbot de texto com I.A',
+    imagem: printProjeto6,
+    descricao:
+      'Chatbot para testes de integração com Spring AI e Ollama. Explora o consumo de modelos de linguagem em uma aplicação Java.',
+    tecnologias: ['Java', 'Spring Boot', 'Spring AI', 'Ollama'],
+    links: [['Código', 'https://github.com/luizjardel/dio-spring-boot-learning-track']]
+  },
+  {
+    id: 6,
+    titulo: 'Sistema de agendamento de horários',
+    imagem: printProjeto4,
+    descricao:
+      'Sistema para gerenciar agendamentos, com cadastro de usuários, criação e gerenciamento de eventos e persistência em banco de dados.',
+    tecnologias: ['Java', 'Spring Boot', 'SQL'],
+    links: []
+  },
+  {
+    id: 7,
+    titulo: 'Gerador de CSS com I.A',
+    imagem: printProjeto2,
+    descricao:
+      'Aplicação web que gera código CSS a partir de instruções do usuário, usando uma API de inteligência artificial.',
+    tecnologias: ['HTML', 'CSS', 'JavaScript'],
+    links: [['Ver site', 'https://gerador-de-css.onrender.com']]
+  }
+];
+
+const CERTIFICADOS = [
+  ['Santander 2026 – AI Java Back-end', 'Santander e DIO', '49 h', '2026', certifSantander],
+  ['Itaú – Java com Inteligência Artificial', 'Itaú e DIO', '45 h', '2026', certifItau],
+  ['Endian Firewall Community – Administração profissional', 'Udemy', '14,5 h', '2026', certifEndian],
+  ['Claude Code in Action', 'Anthropic', '3 h', '2026', certifAction],
+  ['Claude Code 101', 'Anthropic', '3 h', '2026', certifCode101],
+  ['Claude 101', 'Anthropic', '1 h', '2026', certifClaude101],
+  ['Imersão Dev com Google Gemini, 10ª edição', 'Alura e Google Gemini', '3 h', '2025', certificado],
+  ['Curso de inglês, nível básico', 'ITEP – Instituto de Tecnologia e Educação Profissional', '100 h', '2025', certifingles]
+];
+
 export default function App() {
-  const [imagemZoom, setImagemZoom] = useState(null);
-  const [heroVisible, setHeroVisible] = useState(false);
-  const [secaoAtiva, setSecaoAtiva] = useState('inicio');
-  const [mostrarTopo, setMostrarTopo] = useState(false);
+  const [zoom, setZoom] = useState(null);
+  const [ativa, setAtiva] = useState('inicio');
+  const [fi, setFi] = useState(0);
+  const [tema, setTema] = useState(() => {
+    try {
+      return localStorage.getItem('tema') || 'escuro';
+    } catch {
+      return 'escuro';
+    }
+  });
 
-  const thumbRef = useRef(null);
-  const dragRef = useRef(null);
-
-  const sobreRef = useReveal();
-  const certificadosRef = useReveal();
-  const destaqueRef = useReveal();
-  const galeriaRef = useReveal();
-  const contatoRef = useReveal();
-
+  // Aplica o tema na página inteira e lembra a escolha.
   useEffect(() => {
-    const timer = setTimeout(() => setHeroVisible(true), 80);
-    return () => clearTimeout(timer);
-  }, []);
+    document.documentElement.dataset.tema = tema;
+    try {
+      localStorage.setItem('tema', tema);
+    } catch {
+      /* sem armazenamento: o tema vale só nesta visita */
+    }
+  }, [tema]);
 
-  // Barra de rolagem customizada + botão "voltar ao topo".
-  // Usa requestAnimationFrame para atualizar no máximo 1x por frame
-  // e escreve direto no DOM (sem re-render a cada pixel rolado).
+  // Marca no menu a seção que está no meio da tela.
   useEffect(() => {
-    let ticking = false;
-
-    const atualizar = () => {
-      const max =
-        document.documentElement.scrollHeight - window.innerHeight;
-      setMostrarTopo(window.scrollY > 600);
-
-      // Barra de rolagem customizada: tamanho e posição do "polegar"
-      const thumb = thumbRef.current;
-      if (thumb) {
-        const docH = document.documentElement.scrollHeight;
-        const viewH = window.innerHeight;
-
-        if (max <= 0) {
-          thumb.style.opacity = '0';
-        } else {
-          const h = Math.max((viewH / docH) * viewH, 48);
-          const y = (window.scrollY / max) * (viewH - h);
-          thumb.style.opacity = '1';
-          thumb.style.height = `${h}px`;
-          thumb.style.transform = `translateY(${y}px)`;
-        }
-      }
-
-      ticking = false;
-    };
-
-    const onScroll = () => {
-      if (!ticking) {
-        ticking = true;
-        requestAnimationFrame(atualizar);
-      }
-    };
-
-    atualizar();
-    window.addEventListener('scroll', onScroll, { passive: true });
-    window.addEventListener('resize', onScroll);
-
-    // Recalcula quando a altura da página muda (imagens carregando etc.)
-    const ro = new ResizeObserver(onScroll);
-    ro.observe(document.body);
-
-    return () => {
-      window.removeEventListener('scroll', onScroll);
-      window.removeEventListener('resize', onScroll);
-      ro.disconnect();
-    };
-  }, []);
-
-  // Descobre qual seção está no meio da tela para destacar no menu.
-  useEffect(() => {
-    const ids = [
-      'inicio',
-      'sobre',
-      'certificados',
-      'destaque',
-      'galeria',
-      'contato'
-    ];
-
     const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((e) => {
-          if (e.isIntersecting) setSecaoAtiva(e.target.id);
-        });
-      },
+      (entries) =>
+        entries.forEach((e) => e.isIntersecting && setAtiva(e.target.id)),
       { rootMargin: '-45% 0px -50% 0px' }
     );
-
-    ids.forEach((id) => {
+    SECOES.forEach(([id]) => {
       const el = document.getElementById(id);
       if (el) observer.observe(el);
     });
-
     return () => observer.disconnect();
   }, []);
 
-  // Trava a rolagem da página enquanto o zoom da imagem está aberto.
+  // Imagem ampliada: trava a rolagem e fecha com Esc.
   useEffect(() => {
-    document.documentElement.style.overflow = imagemZoom ? 'hidden' : '';
+    if (!zoom) return;
+    const fechar = (e) => e.key === 'Escape' && setZoom(null);
+    document.documentElement.style.overflow = 'hidden';
+    window.addEventListener('keydown', fechar);
     return () => {
       document.documentElement.style.overflow = '';
+      window.removeEventListener('keydown', fechar);
     };
-  }, [imagemZoom]);
+  }, [zoom]);
 
-  // Marca a página como "rolando" para acender a barra de rolagem.
+  // Troca a frase da abertura (fica parada para quem prefere menos movimento).
   useEffect(() => {
-    let timer;
-
-    const onScroll = () => {
-      document.documentElement.classList.add('is-scrolling');
-      clearTimeout(timer);
-      timer = setTimeout(() => {
-        document.documentElement.classList.remove('is-scrolling');
-      }, 700);
-    };
-
-    window.addEventListener('scroll', onScroll, { passive: true });
-
-    return () => {
-      window.removeEventListener('scroll', onScroll);
-      clearTimeout(timer);
-      document.documentElement.classList.remove('is-scrolling');
-    };
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    const t = setInterval(() => setFi((i) => (i + 1) % FRASES.length), 2800);
+    return () => clearInterval(t);
   }, []);
 
-  // A suavização fica por conta do CSS (scroll-behavior), que também
-  // respeita quem desativa animações no sistema.
-  const scrollToSection = (id) => {
-    const element = document.getElementById(id);
-    if (element) element.scrollIntoView();
-  };
-
-
-  // Arrastar a barra de rolagem customizada
-  const iniciarArraste = (e) => {
-    e.preventDefault();
-    e.stopPropagation();
-    const thumb = thumbRef.current;
-    if (!thumb) return;
-    thumb.setPointerCapture(e.pointerId);
-    thumb.classList.add('is-dragging');
-    dragRef.current = { startY: e.clientY, startScroll: window.scrollY };
-  };
-
-  const arrastar = (e) => {
-    const d = dragRef.current;
-    const thumb = thumbRef.current;
-    if (!d || !thumb) return;
-
-    const viewH = window.innerHeight;
-    const max = document.documentElement.scrollHeight - viewH;
-    const trilho = viewH - thumb.offsetHeight;
-    if (trilho <= 0) return;
-
-    window.scrollTo({
-      top: d.startScroll + (e.clientY - d.startY) * (max / trilho),
-      behavior: 'instant'
-    });
-  };
-
-  const soltarArraste = () => {
-    dragRef.current = null;
-    if (thumbRef.current) thumbRef.current.classList.remove('is-dragging');
-  };
-
-  // Clicar no trilho (fora do polegar) leva a página até aquele ponto
-  const clicarTrilho = (e) => {
-    if (e.target !== e.currentTarget) return;
-    const viewH = window.innerHeight;
-    const max = document.documentElement.scrollHeight - viewH;
-    window.scrollTo({ top: (e.clientY / viewH) * max, behavior: 'smooth' });
-  };
-
-
-  const meusCertificados = [
-    {
-      id: 1,
-      titulo: 'Claude 101',
-      instituicao: 'Anthropic',
-      cargaHoraria: '1 h',
-      ano: '2026',
-      imagem: certifClaude101
-    },
-
-    {
-      id: 2,
-      titulo: 'Claude Code In Action',
-      instituicao: 'Anthropic',
-      cargaHoraria: '3 h',
-      ano: '2026',
-      imagem: certifAction
-    },
-
-    {
-      id: 3,
-      titulo: 'Claude Code 101',
-      instituicao: 'Anthropic',
-      cargaHoraria: '3 h',
-      ano: '2026',
-      imagem: certifCode101
-    },
-
-    {
-      id: 4,
-      titulo: 'Imersão Dev Com Google Gemini 10ª Edição',
-      instituicao: 'Alura em parceria com Google Gemini',
-      cargaHoraria: '3 h',
-      ano: '2025',
-      imagem: certificado
-    },
-
-    {
-      id: 5,
-      titulo: 'Curso de Inglês Nível Básico',
-      instituicao: 'ITEP - Instituto de Tecnologia e Educação Profissional',
-      cargaHoraria: '100 h',
-      ano: '2025',
-      imagem: certifingles
-    },
-
-    {
-      id: 6,
-      titulo: 'Santander 2026 - AI Java Back-end',
-      instituicao: 'Santander em parceria com DIO',
-      cargaHoraria: '49 h',
-      ano: '2026',
-      imagem: certifSantander
-    },
-
-    {
-      id: 7,
-      titulo: 'Itaú - Java com Inteligência Artificial',
-      instituicao: 'Itaú em parceria com DIO',
-      cargaHoraria: '45 h',
-      ano: '2026',
-      imagem: certifItau
-    },
-
-    {
-      id: 8,
-      titulo: 'Endian Firewall Community - Administração Profissional',
-      instituicao: 'Udemy',
-      cargaHoraria: '14,5 h',
-      ano: '2026',
-      imagem: certifEndian
-    }
-  ];
-
-
-
-  const outrosProjetos = [
-    {
-      id: 1,
-      tipo: 'HACKATHON',
-      titulo: 'Almoxarifado Compartilhado',
-      imagem: printProjeto5,
-      descricao:
-        'Projeto desenvolvido durante um Hackathon em equipe, com foco na construção de uma solução para gerenciamento de almoxarifado. Atuei como desenvolvedor Back-end, contribuindo diretamente na implementação do CRUD de produtos e nos módulos relacionados a pedidos e transferências de itens.',
-      tecnologias: [
-        'Java',
-        'Spring Boot',
-        'PostgreSQL',
-        'Docker',
-        'Flyway',
-        'REST API'
-      ]
-    },
-
-    {
-      id: 3,
-      tipo: 'PROJETO',
-      titulo: 'ChatBot de Texto com I.A',
-      imagem: printProjeto6,
-      descricao:
-        'I.A Feita Para de Texto feito com o Spring AI,Java e Spring Boot. A aplicação permite que os usuários interajam com um chatbot de texto, enviando mensagens e recebendo respostas geradas por inteligência artificial. O projeto explora conceitos de processamento de linguagem natural, integração com APIs externas e desenvolvimento de back-end robusto.',
-      tecnologias: [
-        'Java',
-        'Spring Boot',
-        'REST API',
-        'Banco de Dados'
-      ]
-    },
-
-    {
-      id: 4,
-      tipo: 'PROJETO',
-      titulo: 'Sistema de Agendamento de Horários',
-      descricao:
-        'Sistema desenvolvido com Java e Spring Boot para gerenciamento de agendamentos. A aplicação trabalha com cadastro de usuários, criação e gerenciamento de eventos e persistência das informações em banco de dados.',
-      imagem: printProjeto4,
-      tecnologias: [
-        'Java',
-        'Spring Boot',
-        'SQL'
-      ]
-    },
-
-    {
-      id: 7,
-      tipo: 'PROJETO',
-      titulo: 'Bot de Vagas no Telegram',
-      imagem: printProjeto7,
-      descricao:
-        'Bot desenvolvido em Python que envia vagas de tecnologia automaticamente pelo Telegram. O projeto trabalha com automação, integração com a API do Telegram e organização das informações das vagas para o envio aos usuários.',
-      tecnologias: [
-        'Python',
-        'Telegram Bot API'
-      ]
-    },
-
-    {
-      id: 8,
-      tipo: 'PROJETO',
-      titulo: 'Agente de I.A para Auditoria de Código',
-      imagem: printProjeto8,
-      descricao:
-        'Agente autônomo local (local-first) de I.A para auditoria de código estático, refatoração baseada em princípios Clean Code e SOLID e identificação de vulnerabilidades. Os fluxos de agentes são orquestrados com CrewAI e Ollama, executando o modelo Llama 3.2 localmente, com respostas formatadas em Markdown. A análise é automatizada sem depender de APIs pagas em nuvem, garantindo total privacidade do código-fonte.',
-      tecnologias: [
-        'Python',
-        'CrewAI',
-        'Ollama',
-        'Llama 3.2',
-        'Clean Code',
-        'SOLID'
-      ]
-    },
-
-    {
-      id: 5,
-      tipo: 'PROJETO',
-      titulo: 'Gerador de CSS com IA',
-      descricao:
-        'Aplicação web desenvolvida para gerar código CSS personalizado a partir das solicitações do usuário. O projeto explora a integração com inteligência artificial para transformar instruções em estilos CSS.',
-      imagem: printProjeto2,
-      tecnologias: [
-        'HTML',
-        'CSS',
-        'JavaScript',
-        'IA'
-      ]
-    }
-  ];
+  // Títulos das seções aparecem uma vez, quando entram na tela.
+  useEffect(() => {
+    const alvos = document.querySelectorAll('.sec h2, .chamada');
+    alvos.forEach((el) => el.classList.add('anim-texto'));
+    const io = new IntersectionObserver(
+      (es) =>
+        es.forEach((e) => {
+          if (e.isIntersecting) {
+            e.target.classList.add('on');
+            io.unobserve(e.target);
+          }
+        }),
+      { rootMargin: '0px 0px -10% 0px' }
+    );
+    alvos.forEach((el) => io.observe(el));
+    return () => io.disconnect();
+  }, []);
 
   return (
-    <div
-      style={{
-        width: '100%',
-        minHeight: '100vh',
-        position: 'relative',
-        backgroundColor: '#000',
-        fontFamily: '"Segoe UI", Roboto, Helvetica, Arial, sans-serif'
-      }}
-    >
-
-
-      <style>{`
-        /* ---------- Rolagem única, suave e sem bugs ---------- */
-        html {
-          overflow-x: hidden;
-          scroll-behavior: smooth;
-          scrollbar-width: none;
-        }
-
-        /* Esconde a barra nativa: usamos a barra customizada abaixo */
-        html::-webkit-scrollbar { display: none; }
-
-        .custom-scrollbar {
-          position: fixed;
-          top: 0;
-          right: 0;
-          width: 16px;
-          height: 100%;
-          z-index: 120;
-        }
-
-        .custom-scrollbar-thumb {
-          position: absolute;
-          top: 0;
-          right: 4px;
-          width: 6px;
-          min-height: 48px;
-          border-radius: 6px;
-          background: rgba(255,255,255,0.18);
-          cursor: grab;
-          touch-action: none;
-          will-change: transform;
-          transition: background 0.35s ease, width 0.2s ease,
-            box-shadow 0.35s ease, opacity 0.3s ease;
-        }
-
-        .custom-scrollbar:hover .custom-scrollbar-thumb {
-          width: 9px;
-          background: rgba(255,255,255,0.5);
-        }
-
-        /* acende enquanto rola */
-        html.is-scrolling .custom-scrollbar-thumb {
-          background: #ffffff;
-          box-shadow: 0 0 14px rgba(255,255,255,0.55);
-        }
-
-        .custom-scrollbar-thumb.is-dragging {
-          width: 9px;
-          cursor: grabbing;
-          background: #ffffff;
-          box-shadow: 0 0 16px rgba(255,255,255,0.65);
-        }
-
-        /* Celular: a barra nativa já some sozinha, então não mostramos esta */
-        @media (hover: none) {
-          .custom-scrollbar { display: none; }
-        }
-
-        body, #root {
-          margin: 0;
-          padding: 0;
-          width: 100%;
-          max-width: none;
-          height: auto;
-          min-height: 100%;
-          overflow: visible;
-        }
-
-        section[id] { scroll-margin-top: 90px; }
-
-        .nav-link.is-active { color: #fff !important; }
-        .nav-link.is-active::after { transform: scaleX(1); }
-
-        .back-to-top {
-          position: fixed;
-          right: 18px;
-          bottom: calc(18px + env(safe-area-inset-bottom, 0px));
-          width: 44px;
-          height: 44px;
-          border-radius: 50%;
-          border: 1px solid rgba(255,255,255,0.2);
-          background: rgba(0,0,0,0.7);
-          backdrop-filter: blur(8px);
-          color: #fff;
-          font-size: 1.2rem;
-          cursor: pointer;
-          z-index: 90;
-          opacity: 0;
-          transform: translateY(12px);
-          pointer-events: none;
-          transition: opacity 0.3s ease, transform 0.3s ease;
-        }
-
-        .back-to-top.is-visible {
-          opacity: 1;
-          transform: none;
-          pointer-events: auto;
-        }
-
-        .back-to-top:hover {
-          background: rgba(255,255,255,0.12);
-        }
-
-        /* ---------- Animações ---------- */
-        @keyframes fadeInUp {
-          from { opacity: 0; transform: translateY(35px); }
-          to { opacity: 1; transform: translateY(0); }
-        }
-
-        @keyframes fadeIn {
-          from { opacity: 0; }
-          to { opacity: 1; }
-        }
-
-        @keyframes floatAvatar {
-          0%, 100% { transform: translateY(0); }
-          50% { transform: translateY(-8px); }
-        }
-
-        @keyframes glowPulse {
-          0%, 100% { box-shadow: 0 0 25px rgba(255, 255, 255, 0.2); }
-          50% { box-shadow: 0 0 38px rgba(255, 255, 255, 0.4); }
-        }
-
-        @keyframes navAppear {
-          from { opacity: 0; transform: translateY(-20px); filter: blur(4px); }
-          to { opacity: 1; transform: translateY(0); filter: blur(0); }
-        }
-
-        @keyframes cardAppear {
-          from { opacity: 0; transform: translateY(22px) scale(0.985); }
-          to { opacity: 1; transform: translateY(0) scale(1); }
-        }
-
-        @keyframes shine {
-          0% { left: -100%; }
-          100% { left: 150%; }
-        }
-
-        .hero-item {
-          opacity: 0;
-          transform: translateY(25px);
-          transition: opacity 1s ease, transform 1s cubic-bezier(.16,1,.3,1);
-        }
-
-        .hero-item.is-visible {
-          opacity: 1;
-          transform: translateY(0);
-        }
-
-        .reveal-section {
-          opacity: 0;
-          transform: translateY(35px);
-          transition: opacity 1s ease, transform 1s cubic-bezier(.16,1,.3,1);
-        }
-
-        .reveal-section.is-visible {
-          opacity: 1;
-          transform: translateY(0);
-        }
-
-        .avatar-container {
-          animation: floatAvatar 5s ease-in-out infinite, glowPulse 4s ease-in-out infinite;
-          transition: transform 0.4s cubic-bezier(.22,1,.36,1);
-        }
-
-        .avatar-container:hover {
-          transform: scale(1.06) rotate(1deg);
-        }
-
-        .main-navbar {
-          animation: navAppear 0.8s cubic-bezier(.22,1,.36,1);
-        }
-
-        .nav-link {
-          position: relative;
-          overflow: hidden;
-          transition: color 0.4s ease, transform 0.45s cubic-bezier(.16,1,.3,1), background-color 0.4s ease;
-        }
-
-        .nav-link::before {
-          content: '';
-          position: absolute;
-          width: 100%;
-          height: 100%;
-          top: 0;
-          left: -100%;
-          background: linear-gradient(90deg, transparent, rgba(255,255,255,0.08), transparent);
-          transition: left 0.8s ease;
-        }
-
-        .nav-link::after {
-          content: '';
-          position: absolute;
-          left: 8px;
-          right: 8px;
-          bottom: 2px;
-          height: 2px;
-          background: #fff;
-          transform: scaleX(0);
-          transform-origin: center;
-          transition: transform 0.3s cubic-bezier(.22,1,.36,1);
-        }
-
-        .nav-link:hover {
-          color: #fff !important;
-          transform: translateY(-1px) scale(1.015);
-          background-color: rgba(255,255,255,0.04);
-        }
-
-        .nav-link:hover::before {
-          left: 100%;
-        }
-
-        .nav-link:hover::after {
-          transform: scaleX(1);
-        }
-
-        .nav-link:active {
-          transform: scale(0.94);
-        }
-
-        .card-projeto {
-          position: relative;
-          overflow: hidden;
-          animation: cardAppear 0.9s cubic-bezier(.16,1,.3,1) both;
-          transition: transform 0.55s cubic-bezier(.16,1,.3,1), box-shadow 0.4s ease, border-color 0.4s ease;
-        }
-
-        .card-projeto::before {
-          content: '';
-          position: absolute;
-          top: 0;
-          left: -100%;
-          width: 60%;
-          height: 100%;
-          background: linear-gradient(90deg, transparent, rgba(255,255,255,0.07), transparent);
-          transform: skewX(-20deg);
-          pointer-events: none;
-          z-index: 2;
-        }
-
-        .card-projeto:hover::before {
-          animation: shine 0.8s ease;
-        }
-
-        .card-projeto:hover {
-          transform: translateY(-5px) scale(1.012);
-          box-shadow: 0 25px 50px rgba(0,0,0,0.65), 0 0 25px rgba(255,255,255,0.05);
-          border-color: rgba(255,255,255,0.25) !important;
-        }
-
-        .card-projeto:active {
-          transform: translateY(-4px) scale(0.99);
-        }
-
-        .card-destaque {
-          transition: transform 0.6s cubic-bezier(.16,1,.3,1), box-shadow 0.45s ease, border-color 0.45s ease;
-        }
-
-        .card-destaque:hover {
-          transform: translateY(-4px) scale(1.008);
-          box-shadow: 0 30px 70px rgba(0,0,0,0.85), 0 0 35px rgba(255,255,255,0.07);
-          border-color: rgba(255,255,255,0.3) !important;
-        }
-
-        .cert-item {
-          transition: transform 0.45s cubic-bezier(.16,1,.3,1), border-color 0.3s ease, background-color 0.3s ease, box-shadow 0.3s ease;
-        }
-
-        .cert-item:hover {
-          transform: translateX(4px) scale(1.008);
-          border-color: rgba(255,255,255,0.22) !important;
-          background-color: rgba(30,30,30,0.95) !important;
-          box-shadow: 0 10px 25px rgba(0,0,0,0.45);
-        }
-
-        .img-hover-zoom {
-          transition: transform 0.9s cubic-bezier(.16,1,.3,1), filter 0.5s ease;
-        }
-
-        .img-hover-zoom:hover {
-          transform: scale(1.04);
-          filter: brightness(1.08) contrast(1.05);
-        }
-
-        .tech-tag {
-          transition: transform 0.25s ease, background-color 0.25s ease, border-color 0.25s ease;
-        }
-
-        .stack-icon {
-          color: #b5b5b5;
-          transition: transform 0.25s ease, background-color 0.25s ease, border-color 0.25s ease, color 0.25s ease;
-        }
-
-        .stack-icon:hover {
-          color: #fff;
-          transform: translateY(-3px);
-          background: rgba(255,255,255,0.1) !important;
-          border-color: rgba(255,255,255,0.2) !important;
-        }
-
-        .tech-tag:hover {
-          transform: translateY(-2px);
-          background-color: rgba(255,255,255,0.09) !important;
-          border-color: rgba(255,255,255,0.2) !important;
-        }
-
-        .social-link {
-          display: inline-block;
-          transition: transform 0.45s cubic-bezier(.16,1,.3,1), background-color 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
-        }
-
-        .social-link:hover {
-          transform: translateY(-3px) scale(1.02);
-          background-color: rgba(255,255,255,0.12);
-          border-color: rgba(255,255,255,0.25) !important;
-          box-shadow: 0 10px 25px rgba(0,0,0,0.5);
-        }
-
-        .social-link:active {
-          transform: scale(0.95);
-        }
-
-        .zoom-overlay-img {
-          animation: fadeIn 0.3s ease;
-        }
-
-        @media (prefers-reduced-motion: reduce) {
-          html { scroll-behavior: auto; }
-
-          *, *::before, *::after {
-            animation: none !important;
-            transition: none !important;
-          }
-
-          .hero-item, .reveal-section {
-            opacity: 1 !important;
-            transform: none !important;
-          }
-        }
-      `}</style>
-
-      {/* Fundo de raios: fixo e sem capturar toque/clique, para nunca
-          atrapalhar a rolagem (principalmente no celular). */}
-      <div
-        style={{
-          position: 'fixed',
-          inset: 0,
-          zIndex: 1,
-          pointerEvents: 'none'
-        }}
-      >
-        <LightRays
-          raysOrigin="top-center"
-          raysColor="#ffffff"
-          raysSpeed={1}
-          lightSpread={0.5}
-          rayLength={3}
-          followMouse={true}
-          mouseInfluence={0.1}
-          noiseAmount={0}
-          distortion={0}
-          className="custom-rays"
-          pulsating={false}
-          fadeDistance={1}
-          saturation={1}
-        />
-      </div>
-
-
-      {/* Barra de rolagem customizada (aparece só em dispositivos com mouse) */}
-      <div className="custom-scrollbar" onPointerDown={clicarTrilho}>
-        <div
-          ref={thumbRef}
-          className="custom-scrollbar-thumb"
-          onPointerDown={iniciarArraste}
-          onPointerMove={arrastar}
-          onPointerUp={soltarArraste}
-          onPointerCancel={soltarArraste}
-        />
-      </div>
-
-      {/* Botão de voltar ao topo */}
-      <button
-        onClick={() => scrollToSection('inicio')}
-        aria-label="Voltar ao topo"
-        className={`back-to-top${mostrarTopo ? ' is-visible' : ''}`}
-      >
-        ↑
-      </button>
-
-
-      <nav
-        className="main-navbar"
-        style={{
-          position: 'fixed',
-          top: 0,
-          left: 0,
-          width: '100%',
-          minHeight: '60px',
-          backgroundColor: 'rgba(0, 0, 0, 0.85)',
-          backdropFilter: 'blur(12px)',
-          borderBottom: '1px solid rgba(255, 255, 255, 0.05)',
-          display: 'flex',
-          justifyContent: 'center',
-          alignItems: 'center',
-          gap: '10px',
-          flexWrap: 'wrap',
-          padding: '8px 10px',
-          boxSizing: 'border-box',
-          zIndex: 100,
-          animation: 'fadeIn 0.6s ease'
-        }}
-      >
-        {[
-          ['inicio', 'Início'],
-          ['sobre', 'Sobre'],
-          ['certificados', 'Certificados'],
-          ['destaque', 'Destaque'],
-          ['galeria', 'Projetos'],
-          ['contato', 'Redes']
-        ].map(([id, label]) => (
-          <button
+    <div className="app">
+      <style>{CSS}</style>
+
+      <nav className="pill" aria-label="Seções">
+        {SECOES.map(([id, nome]) => (
+          <a
             key={id}
-            onClick={() => scrollToSection(id)}
-            className={`nav-link${secaoAtiva === id ? ' is-active' : ''}`}
-            aria-current={secaoAtiva === id ? 'true' : undefined}
-            style={navLinkStyle}
+            href={`#${id}`}
+            aria-current={ativa === id ? 'true' : undefined}
           >
-            {label}
-          </button>
+            {nome}
+          </a>
         ))}
+        <span className="sep" aria-hidden="true" />
+        <button
+          type="button"
+          className="tema"
+          onClick={() => setTema(tema === 'escuro' ? 'claro' : 'escuro')}
+          aria-label={tema === 'escuro' ? 'Mudar para tema branco' : 'Mudar para tema preto'}
+          title={tema === 'escuro' ? 'Tema branco' : 'Tema preto'}
+        >
+          {tema === 'escuro' ? (
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" aria-hidden="true">
+              <circle cx="12" cy="12" r="4" />
+              <path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4" />
+            </svg>
+          ) : (
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+              <path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z" />
+            </svg>
+          )}
+        </button>
       </nav>
 
-
-
-
-
-
-      <div
-        style={{
-          position: 'relative',
-          zIndex: 10,
-          width: '100%',
-          display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'center',
-          color: '#fff',
-          paddingTop: '90px',
-          boxSizing: 'border-box',
-          pointerEvents: 'none'
-        }}
-      >
-
-
-
-        <section
-          id="inicio"
-          style={{
-            minHeight: '60vh',
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center',
-            justifyContent: 'center',
-            textAlign: 'center',
-            padding: '0 20px',
-            pointerEvents: 'auto'
-          }}
-        >
-          <div
-            className={`avatar-container hero-item${heroVisible ? ' is-visible' : ''}`}
-            style={{
-              width: '200px',
-              height: '200px',
-              borderRadius: '50%',
-              border: '2px solid rgba(255, 255, 255, 0.8)',
-              marginBottom: '20px',
-              overflow: 'hidden',
-              display: 'flex',
-              justifyContent: 'center',
-              alignItems: 'center',
-              backgroundColor: '#111',
-              cursor: 'pointer'
-            }}
-          >
-            <img
-              src={minhaFoto}
-              alt="Luiz Jardel"
-              style={{
-                width: '100%',
-                height: '100%',
-                objectFit: 'cover'
-              }}
-              onError={(e) => {
-                e.target.style.display = 'none';
-                e.target.parentNode.innerHTML =
-                  '<span style="font-size: 2rem; color: #666;">&lt; / &gt;</span>';
-              }}
-            />
-          </div>
-
-          <h1
-            className={`hero-item${heroVisible ? ' is-visible' : ''}`}
-            style={{
-              fontSize: 'calc(1.8rem + 1vw)',
-              fontWeight: '700',
-              margin: '0 0 8px 0',
-              textShadow: '0 0 15px rgba(255,255,255,0.3)',
-              transitionDelay: '0.12s'
-            }}
-          >
-            Luiz Jardel
-          </h1>
-
-          <p
-            className={`hero-item${heroVisible ? ' is-visible' : ''}`}
-            style={{
-              fontSize: '1.1rem',
-              color: '#ffffff',
-              margin: '0',
-              transitionDelay: '0.24s'
-            }}
-          >
-            Desenvolvedor Back-end | Java & Spring Boot
-          </p>
-        </section>
-
-
-
-        <section
-          id="sobre"
-          ref={sobreRef}
-          className="reveal-section"
-          style={{
-            minHeight: '65vh',
-            width: '100%',
-            maxWidth: '680px',
-            padding: '20px',
-            boxSizing: 'border-box',
-            display: 'flex',
-            flexDirection: 'column',
-            justifyContent: 'center',
-            pointerEvents: 'auto'
-          }}
-        >
-          <div
-            style={{
-              backgroundColor: 'rgba(15, 15, 15, 0.8)',
-              border: '1px solid rgba(255, 255, 255, 0.08)',
-              borderRadius: '16px',
-              padding: '25px',
-              boxSizing: 'border-box',
-              backdropFilter: 'blur(8px)',
-              boxShadow: '0 15px 35px rgba(0,0,0,0.6)'
-            }}
-          >
-            <h2
-              style={{
-                fontSize: '1.4rem',
-                fontWeight: '600',
-                margin: '0 0 15px 0',
-                color: '#fff'
-              }}
-            >
-              👨🏾‍💻 Sobre Mim
-            </h2>
-
-            <p
-              style={{
-                fontSize: '0.9rem',
-                color: '#ccc',
-                lineHeight: '1.6',
-                margin: '0 0 25px 0'
-              }}
-            >
-              Sou estudante de Análise e Desenvolvimento de Sistemas e
-              desenvolvedor Back-end com foco no ecossistema Java.
-
-              <br />
-              <br />
-
-              Venho desenvolvendo projetos práticos utilizando Java e Spring
-              Boot, trabalhando com APIs REST, bancos de dados, organização
-              em camadas e boas práticas de desenvolvimento de software.
-
-              <br />
-              <br />
-
-              Atualmente estou aprofundando meus conhecimentos em Java,
-              Spring Boot, PostgreSQL, Docker e arquitetura de aplicações.
-              Também possuo conhecimentos em tecnologias de Front-end, como
-              HTML, CSS, JavaScript, e aprendendo React e TypeScript para complementar minhas habilidades de desenvolvimento web.
-
-              <br />
-              <br />
-
-              Além dos projetos pessoais e acadêmicos, venho buscando
-              experiência prática por meio de projetos colaborativos,
-              desenvolvimento em equipe e participação em Hackathons.
-
-              <br />
-              <br />
-
-              Meu objetivo é evoluir continuamente como desenvolvedor,
-              construir soluções reais e me preparar para atuar
-              profissionalmente no mercado de tecnologia.
-            </p>
-
-
-            <h3
-              style={{
-                fontSize: '1.05rem',
-                fontWeight: '600',
-                color: '#fff',
-                margin: '0 0 16px 0'
-              }}
-            >
-              Minhas Stacks
-            </h3>
-
-            <div
-              style={{
-                display: 'grid',
-                gridTemplateColumns: 'repeat(auto-fit, minmax(145px, 1fr))',
-                gap: '12px'
-              }}
-            >
-              {[
-                {
-                  titulo: 'Back-end',
-                  tecnologias: [
-                    { nome: 'Java', Icone: FaJava, cor: '#E76F00' },
-                    { nome: 'Spring Boot', Icone: SiSpringboot, cor: '#6DB33F' },
-                    { nome: 'Python', Icone: SiPython, cor: '#3776AB' }
-                  ]
-                },
-                {
-                  titulo: 'Front-end',
-                  tecnologias: [
-                    { nome: 'JavaScript', Icone: SiJavascript, cor: '#F7DF1E' },
-                    { nome: 'React', Icone: SiReact, cor: '#61DAFB' },
-                    { nome: 'TypeScript', Icone: SiTypescript, cor: '#3178C6' },
-                    { nome: 'Angular', Icone: SiAngular, cor: '#DD0031' }
-                  ]
-                },
-                {
-                  titulo: 'Banco de dados e ferramentas',
-                  tecnologias: [
-                    { nome: 'PostgreSQL', Icone: SiPostgresql, cor: '#4169E1' },
-                    { nome: 'MySQL', Icone: SiMysql, cor: '#4479A1' },
-                    { nome: 'MongoDB', Icone: SiMongodb, cor: '#47A248' },
-                    { nome: 'Docker', Icone: SiDocker, cor: '#2496ED' },
-                    { nome: 'Git', Icone: SiGit, cor: '#F05032' }
-                  ]
-                },
-                {
-                  titulo: 'Em aprendizado',
-                  tecnologias: [
-                    { nome: 'C#', Icone: TbBrandCSharp, cor: '#9B4F96' },
-                    { nome: 'Linux', Icone: FaLinux, cor: '#FCC624' },
-                    { nome: 'AWS', Icone: FaAws, cor: '#FF9900' }
-                  ]
-                }
-              ].map((grupo) => (
-                <div
-                  key={grupo.titulo}
-                  style={{
-                    background: 'rgba(255,255,255,0.035)',
-                    border: '1px solid rgba(255,255,255,0.09)',
-                    borderRadius: '12px',
-                    padding: '14px',
-                    minWidth: 0
-                  }}
-                >
-                  <h4
-                    style={{
-                      color: '#aaa',
-                      fontSize: '0.76rem',
-                      fontWeight: '600',
-                      margin: '0 0 12px 0'
-                    }}
-                  >
-                    {grupo.titulo}
-                  </h4>
-
-                  <div
-                    style={{
-                      display: 'flex',
-                      flexWrap: 'wrap',
-                      gap: '9px'
-                    }}
-                  >
-                    {grupo.tecnologias.map(({ nome, Icone }) => (
-                      <div
-                        key={nome}
-                        title={nome}
-                        aria-label={nome}
-                        style={{
-                          width: '42px',
-                          height: '42px',
-                          display: 'flex',
-                          alignItems: 'center',
-                          justifyContent: 'center',
-                          borderRadius: '10px',
-                          background: 'rgba(255,255,255,0.045)',
-                          border: '1px solid rgba(255,255,255,0.08)',
-                          transition: 'transform 0.25s ease, background 0.25s ease',
-                          cursor: 'default'
-                        }}
-                        className="stack-icon"
-                      >
-                        <Icone size={23} color="currentColor" aria-hidden="true" />
-                      </div>
-                    ))}
-                  </div>
-
-                  <p
-                    style={{
-                      fontSize: '0.7rem',
-                      color: '#777',
-                      margin: '10px 0 0 0',
-                      lineHeight: '1.4'
-                    }}
-                  >
-                    {grupo.tecnologias.map((tech) => tech.nome).join(' · ')}
-                  </p>
-                </div>
-              ))}
-            </div>
-          </div>
-        </section>
-
-
-
-        <section
-          id="certificados"
-          ref={certificadosRef}
-          className="reveal-section"
-          style={{
-            minHeight: '50vh',
-            width: '100%',
-            maxWidth: '680px',
-            padding: '40px 20px',
-            boxSizing: 'border-box',
-            display: 'flex',
-            flexDirection: 'column',
-            justifyContent: 'center',
-            pointerEvents: 'auto'
-          }}
-        >
-          <h2
-            style={{
-              fontSize: '1.3rem',
-              fontWeight: '600',
-              marginBottom: '20px',
-              color: '#fff'
-            }}
-          >
-            📜 Certificações & Cursos
-          </h2>
-
-          <div
-            style={{
-              display: 'flex',
-              flexDirection: 'column',
-              gap: '12px'
-            }}
-          >
-            {meusCertificados.map((cert) => (
-              <div
-                key={cert.id}
-                className="cert-item"
-                onClick={() =>
-                  cert.imagem && setImagemZoom(cert.imagem)
-                }
-                style={{
-                  backgroundColor: 'rgba(15, 15, 15, 0.8)',
-                  border: '1px solid rgba(255, 255, 255, 0.08)',
-                  borderRadius: '12px',
-                  padding: '16px 20px',
-                  display: 'flex',
-                  justifyContent: 'space-between',
-                  alignItems: 'center',
-                  gap: '15px',
-                  cursor: cert.imagem ? 'zoom-in' : 'default',
-                  boxShadow: '0 4px 15px rgba(0,0,0,0.3)',
-                  backdropFilter: 'blur(8px)'
-                }}
-              >
-                <div style={{ flex: 1 }}>
-                  <h3
-                    style={{
-                      fontSize: '0.95rem',
-                      fontWeight: '600',
-                      margin: '0 0 4px 0',
-                      color: '#fff'
-                    }}
-                  >
-                    {cert.titulo}
-                  </h3>
-
-                  <p
-                    style={{
-                      fontSize: '0.8rem',
-                      color: '#aaa',
-                      margin: 0
-                    }}
-                  >
-                    {cert.instituicao} •{' '}
-                    <span style={{ color: '#888' }}>
-                      {cert.cargaHoraria}
-                    </span>
-                  </p>
-                </div>
-
-                <div
-                  style={{
-                    textAlign: 'right',
-                    display: 'flex',
-                    flexDirection: 'column',
-                    alignItems: 'flex-end',
-                    gap: '6px'
-                  }}
-                >
-                  <span
-                    style={{
-                      fontSize: '0.75rem',
-                      color: '#666',
-                      fontWeight: '500'
-                    }}
-                  >
-                    {cert.ano}
+      <main>
+        <section id="inicio" className="hero">
+          <div className="wrap hero-grid">
+            <div>
+              <p className="rise status" style={{ '--i': 0 }}>
+                Fortaleza, Ceará. Disponível para estágio e vagas júnior.
+              </p>
+              <h1 aria-label="Luiz Jardel">
+                {'Luiz Jardel'.split('').map((c, i) => (
+                  <span key={i} className="letra" style={{ '--l': i }} aria-hidden="true">
+                    {c === ' ' ? '\u00A0' : c}
                   </span>
-
-                  {cert.imagem && (
-                    <span
-                      style={{
-                        fontSize: '0.65rem',
-                        color: '#00ffaa',
-                        backgroundColor:
-                          'rgba(0,255,170,0.08)',
-                        padding: '2px 6px',
-                        borderRadius: '4px'
-                      }}
+                ))}
+              </h1>
+              <p className="rise lead" style={{ '--i': 2 }}>
+                Desenvolvedor back-end com foco em Java e Spring Boot.
+              </p>
+              <p className="rise lead lead2" style={{ '--i': 2 }}>
+                Construo <span key={fi} className="troca">{FRASES[fi]}</span>.
+              </p>
+              <div className="rise acoes" style={{ '--i': 3 }}>
+                <a className="botao" href="#projetos">
+                  Ver projetos
+                </a>
+                {SOCIAIS.filter(([n]) => ['GitHub', 'LinkedIn', 'E-mail'].includes(n)).map(
+                  ([nome, url]) => (
+                    <a
+                      key={nome}
+                      className="link"
+                      href={url}
+                      target={url.startsWith('http') ? '_blank' : undefined}
+                      rel="noreferrer"
                     >
-                      Ver documento
-                    </span>
-                  )}
-                </div>
+                      {nome}
+                    </a>
+                  )
+                )}
               </div>
-            ))}
-          </div>
-        </section>
-
-
-
-        <section
-          id="destaque"
-          ref={destaqueRef}
-          className="reveal-section"
-          style={{
-            minHeight: '70vh',
-            width: '100%',
-            maxWidth: '680px',
-            padding: '20px',
-            boxSizing: 'border-box',
-            display: 'flex',
-            flexDirection: 'column',
-            justifyContent: 'center'
-          }}
-        >
-          <div
-            className="card-destaque"
-            style={{
-              backgroundColor: 'rgba(20, 20, 20, 0.85)',
-              border: '2px solid rgba(255, 255, 255, 0.12)',
-              borderRadius: '16px',
-              padding: '25px',
-              boxSizing: 'border-box',
-              backdropFilter: 'blur(10px)',
-              pointerEvents: 'auto',
-              boxShadow: '0 20px 45px rgba(0,0,0,0.7)'
-            }}
-          >
-            <div
-              style={{
-                display: 'flex',
-                justifyContent: 'space-between',
-                alignItems: 'center',
-                marginBottom: '15px'
-              }}
-            >
-              <h2
-                style={{
-                  fontSize: '1.3rem',
-                  margin: 0,
-                  fontWeight: '700',
-                  color: '#fff'
-                }}
-              >
-                ⭐ PROJETO EM DESTAQUE
-              </h2>
-
-              <span
-                style={{
-                  fontSize: '0.7rem',
-                  color: '#fff',
-                  backgroundColor: '#333',
-                  padding: '3px 8px',
-                  borderRadius: '4px',
-                  fontWeight: '600'
-                }}
-              >
-                Principal
-              </span>
             </div>
-
-            <div
-              onClick={() =>
-                setImagemZoom(printSuplementos)
-              }
-              style={{
-                width: '100%',
-                height: '220px',
-                borderRadius: '8px',
-                overflow: 'hidden',
-                cursor: 'zoom-in',
-                marginBottom: '15px',
-                border: '1px solid rgba(255,255,255,0.1)'
-              }}
-            >
+            <div className="rise foto" style={{ '--i': 2 }}>
               <img
-                src={printSuplementos}
-                alt="Loja de suplementos"
-                className="img-hover-zoom"
-                style={{
-                  width: '100%',
-                  height: '100%',
-                  objectFit: 'cover'
-                }}
+                src={minhaFoto}
+                alt="Luiz Jardel"
+                onError={(e) => (e.currentTarget.style.display = 'none')}
               />
             </div>
+          </div>
+        </section>
 
-            <h3
-              style={{
-                fontSize: '1.15rem',
-                margin: '0 0 10px 0',
-                color: '#fff',
-                fontWeight: '600'
-              }}
-            >
-              Loja de Suplementos — Projeto para Cliente Real
-            </h3>
-
-            <p
-              style={{
-                fontSize: '0.88rem',
-                color: '#ccc',
-                lineHeight: '1.5',
-                margin: '0 0 20px 0'
-              }}
-            >
-              Aplicação web desenvolvida para uma loja de suplementos
-              utilizando HTML, CSS e JavaScript. Este foi meu primeiro
-              projeto desenvolvido para um cliente real, permitindo aplicar
-              na prática conhecimentos adquiridos durante meus estudos.
-            </p>
-
-            <div style={techContainerStyle}>
-              <span className="tech-tag" style={techTagStyle}>HTML</span>
-              <span className="tech-tag" style={techTagStyle}>CSS</span>
-              <span className="tech-tag" style={techTagStyle}>JavaScript</span>
+        <section id="sobre" className="sec">
+          <div className="wrap grade">
+            <h2>Sobre</h2>
+            <div className="duas">
+              <div className="texto">
+                <p>
+                  Desenvolvedor back-end com foco em Java e Spring Boot, em busca
+                  da primeira oportunidade na área.
+                </p>
+                <p>
+                  Minha experiência inclui APIs REST, sistemas com persistência em
+                  banco de dados, automações com Python e agentes de I.A rodando
+                  localmente. Participei de um Hackathon em equipe como
+                  desenvolvedor back-end, implementando o CRUD de produtos e os
+                  módulos de pedidos e transferências de um sistema de
+                  almoxarifado.
+                </p>
+                <p>
+                  Estudo Análise e Desenvolvimento de Sistemas na Estácio
+                  (2025–2027) e invisto em projetos práticos e boas práticas de
+                  desenvolvimento, como Git, Clean Code e SOLID.
+                </p>
+              </div>
+              <dl className="stack">
+                {STACK.map(([k, v]) => (
+                  <div key={k}>
+                    <dt>{k}</dt>
+                    <dd>{v.map((n) => <Tec key={n} nome={n} />)}</dd>
+                  </div>
+                ))}
+              </dl>
             </div>
           </div>
         </section>
 
-
-        <section
-          id="galeria"
-          ref={galeriaRef}
-          className="reveal-section"
-          style={{
-            minHeight: '65vh',
-            width: '100%',
-            maxWidth: '1000px',
-            padding: '40px 20px',
-            boxSizing: 'border-box',
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center'
-          }}
-        >
-          <h2
-            style={{
-              fontSize: '1.3rem',
-              fontWeight: '600',
-              marginBottom: '25px',
-              textAlign: 'center'
-            }}
-          >
-            🚀 Projetos Desenvolvidos
-          </h2>
-
-          <div
-            style={{
-              display: 'grid',
-              gridTemplateColumns:
-                'repeat(auto-fit, minmax(280px, 1fr))',
-              gap: '20px',
-              width: '100%',
-              pointerEvents: 'auto'
-            }}
-          >
-            {outrosProjetos.map((proj) => (
-              <div
-                key={proj.id}
-                className="card-projeto"
-                style={{
-                  backgroundColor: 'rgba(15, 15, 15, 0.8)',
-                  border:
-                    proj.tipo === 'HACKATHON'
-                      ? '1px solid rgba(0,255,170,0.25)'
-                      : '1px solid rgba(255, 255, 255, 0.08)',
-                  borderRadius: '12px',
-                  overflow: 'hidden',
-                  boxShadow:
-                    '0 10px 20px rgba(0,0,0,0.4)',
-                  backdropFilter: 'blur(8px)'
-                }}
-              >
-
-
-
-                {proj.imagem ? (
-                  <div
-                    onClick={() =>
-                      setImagemZoom(proj.imagem)
-                    }
-                    style={{
-                      width: '100%',
-                      height: '160px',
-                      overflow: 'hidden',
-                      cursor: 'zoom-in',
-                      backgroundColor: '#111'
-                    }}
-                  >
-                    <img
-                      src={proj.imagem}
-                      alt={proj.titulo}
-                      className="img-hover-zoom"
-                      style={{
-                        width: '100%',
-                        height: '100%',
-                        objectFit: 'cover'
-                      }}
-                    />
-                  </div>
-                ) : (
-                  <div
-                    style={{
-                      width: '100%',
-                      height: '160px',
-                      background:
-                        'linear-gradient(135deg, rgba(20,20,20,1), rgba(40,40,40,1))',
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      borderBottom:
-                        '1px solid rgba(255,255,255,0.06)'
-                    }}
-                  >
-                    <span
-                      style={{
-                        fontSize: '2.5rem',
-                        opacity: 0.5
-                      }}
-                    >
-                      {proj.tipo === 'HACKATHON'
-                        ? '🏆'
-                        : '💻'}
-                    </span>
-                  </div>
-                )}
-
-
-
-                <div style={{ padding: '17px' }}>
-
-                  <span
-                    style={{
-                      display: 'inline-block',
-                      fontSize: '0.62rem',
-                      fontWeight: '700',
-                      letterSpacing: '0.8px',
-                      color:
-                        proj.tipo === 'HACKATHON'
-                          ? '#00ffaa'
-                          : '#888',
-                      marginBottom: '7px'
-                    }}
-                  >
-                    {proj.tipo}
-                  </span>
-
-                  <h3
-                    style={{
-                      fontSize: '1rem',
-                      margin: '0 0 9px 0',
-                      fontWeight: '600',
-                      color: '#fff'
-                    }}
-                  >
-                    {proj.titulo}
-                  </h3>
-
-                  <p
-                    style={{
-                      fontSize: '0.8rem',
-                      color: '#aaa',
-                      lineHeight: '1.5',
-                      margin: '0 0 13px 0'
-                    }}
-                  >
-                    {proj.descricao}
-                  </p>
-
-
-
-                  <div style={techContainerStyle}>
-                    {proj.tecnologias.map(
-                      (tech, index) => (
-                        <span
-                          key={index}
-                          style={techTagStyle}
-                        >
-                          {tech}
-                        </span>
-                      )
+        <section id="projetos" className="sec">
+          <div className="wrap">
+            <h2 className="topo">Projetos</h2>
+          </div>
+          <div className="lista-proj">
+            {PROJETOS.map((p) => (
+              <article key={p.id} className="proj-faixa">
+                <div className="wrap proj">
+                  <div>
+                    <h3>
+                      {p.titulo}
+                      {p.nota && <span>{p.nota}</span>}
+                    </h3>
+                    <p className="descricao">{p.descricao}</p>
+                    <ul className="tags" aria-label="Tecnologias utilizadas">
+                      {p.tecnologias.map((t) => (
+                        <li key={t}><Tec nome={t} /></li>
+                      ))}
+                    </ul>
+                    {p.links.length > 0 && (
+                      <p className="links">
+                        {p.links.map(([nome, url]) => (
+                          <a key={nome} className="link" href={url} target="_blank" rel="noreferrer">
+                            {nome}
+                          </a>
+                        ))}
+                      </p>
                     )}
                   </div>
+                  <button
+                    type="button"
+                    className="thumb"
+                    onClick={() => setZoom(p.imagem)}
+                    aria-label={`Ampliar imagem de ${p.titulo}`}
+                  >
+                    <img src={p.imagem} alt="" loading="lazy" />
+                  </button>
                 </div>
-              </div>
+              </article>
             ))}
           </div>
         </section>
 
-
-        <section
-          id="contato"
-          ref={contatoRef}
-          className="reveal-section"
-          style={{
-            minHeight: '55vh',
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center',
-            justifyContent: 'center',
-            width: '100%',
-            padding: '0 20px',
-            boxSizing: 'border-box',
-            pointerEvents: 'auto',
-            textAlign: 'center'
-          }}
-        >
-          <h3
-            style={{
-              fontSize: '1rem',
-              color: '#ffffff',
-              margin: '0 0 20px 0',
-              letterSpacing: '1px',
-              textTransform: 'uppercase'
-            }}
-          >
-            Sociais
-          </h3>
-
-          <div
-            style={{
-              display: 'flex',
-              justifyContent: 'center',
-              flexWrap: 'wrap',
-              gap: '10px',
-              width: '100%',
-              maxWidth: '500px'
-            }}
-          >
-            <a
-              href="https://www.linkedin.com/in/luiz-jardel/?skipRedirect=true"
-              target="_blank"
-              rel="noreferrer"
-              className="social-link"
-              style={socialLinkStyle}
-            >
-              LinkedIn
-            </a>
-
-            <a
-              href="https://github.com/luizjardel"
-              target="_blank"
-              rel="noreferrer"
-              className="social-link"
-              style={socialLinkStyle}
-            >
-              GitHub
-            </a>
-
-            <a
-              href="https://www.instagram.com/dev.jardel/"
-              target="_blank"
-              rel="noreferrer"
-              className="social-link"
-              style={socialLinkStyle}
-            >
-              Instagram
-            </a>
-
-            <a
-              href="mailto:luizjardel13@gmail.com"
-              className="social-link"
-              style={socialLinkStyle}
-            >
-              E-mail
-            </a>
-
-            <a
-              href="https://www.youtube.com/@devjardel"
-              target="_blank"
-              rel="noreferrer"
-              className="social-link"
-              style={socialLinkStyle}
-            >
-              YouTube
-            </a>
+        <section id="certificados" className="sec">
+          <div className="wrap grade">
+            <h2>Certificados</h2>
+            <ul className="certs">
+              {CERTIFICADOS.map(([titulo, inst, horas, ano, img]) => (
+                <li key={titulo}>
+                  <button type="button" onClick={() => setZoom(img)}>
+                    <span className="c-info">
+                      <strong>{titulo}</strong>
+                      <small>
+                        {inst}, {horas}
+                      </small>
+                    </span>
+                    <span className="c-ano">{ano}</span>
+                  </button>
+                </li>
+              ))}
+            </ul>
           </div>
         </section>
-      </div>
 
+        <section id="contato" className="sec fim">
+          <div className="wrap grade contato-grade">
+            <h2>Contato</h2>
+            <div className="duas contato-duas">
+              <p className="chamada">Vamos conversar sobre a sua vaga ou projeto.</p>
+              <ul className="redes">
+                {SOCIAIS.map(([nome, url]) => (
+                  <li key={nome}>
+                    <LinkSocial nome={nome} url={url} />
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </div>
+        </section>
+      </main>
 
-
-      {imagemZoom && (
-        <div
-          onClick={() => setImagemZoom(null)}
-          style={{
-            position: 'fixed',
-            inset: 0,
-            backgroundColor: 'rgba(0, 0, 0, 0.95)',
-            display: 'flex',
-            justifyContent: 'center',
-            alignItems: 'center',
-            zIndex: 1000,
-            cursor: 'zoom-out',
-            backdropFilter: 'blur(6px)',
-            padding: '10px',
-            boxSizing: 'border-box',
-            animation: 'fadeIn 0.2s ease'
-          }}
-        >
-          <button
-            onClick={() => setImagemZoom(null)}
-            aria-label="Fechar imagem"
-            style={{
-              position: 'absolute',
-              top: '15px',
-              right: '20px',
-              background: 'none',
-              border: 'none',
-              color: '#fff',
-              fontSize: '2.5rem',
-              cursor: 'pointer',
-              transition: 'transform 0.2s ease'
-            }}
-            onMouseEnter={(e) => (e.currentTarget.style.transform = 'scale(1.15) rotate(90deg)')}
-            onMouseLeave={(e) => (e.currentTarget.style.transform = 'scale(1) rotate(0deg)')}
-          >
-            &times;
+      {zoom && (
+        <div className="overlay" onClick={() => setZoom(null)} role="dialog" aria-modal="true">
+          <button type="button" className="fechar" onClick={() => setZoom(null)} aria-label="Fechar imagem">
+            Fechar
           </button>
-
-          <img
-            src={imagemZoom}
-            alt="Zoom"
-            className="zoom-overlay-img"
-            style={{
-              maxWidth: '100%',
-              maxHeight: '80%',
-              borderRadius: '6px',
-              objectFit: 'contain'
-            }}
-          />
+          <img src={zoom} alt="" onClick={(e) => e.stopPropagation()} />
         </div>
       )}
     </div>
   );
 }
 
+const CSS = `
+@import url('https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500&family=Instrument+Serif&display=swap');
 
+:root {
+  --fundo: #000000;
+  --texto: #ececec;
+  --suave: #9b9b9b;
+  --linha: rgba(255, 255, 255, 0.13);
+  --vidro: rgba(0, 0, 0, 0.7);
+  --ativo: rgba(255, 255, 255, 0.1);
+  --brilho: rgba(255, 255, 255, 0.16);
+  --brilho-forte: rgba(255, 255, 255, 0.28);
+  --sombra: 0 0 28px var(--brilho);
+  --sombra-hover: 0 0 46px var(--brilho-forte);
+  --reflexo: rgba(255, 255, 255, 0.16);
+  --painel: #111111;
+  --overlay: rgba(0, 0, 0, 0.95);
+  --serif: 'Instrument Serif', Georgia, 'Times New Roman', serif;
+  --sans: 'Instrument Sans', 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  color-scheme: dark;
+}
 
-const navLinkStyle = {
-  background: 'none',
-  border: 'none',
-  color: '#aaa',
-  fontSize: '0.82rem',
-  fontWeight: '600',
-  cursor: 'pointer',
-  padding: '6px 8px',
-  borderRadius: '4px'
-};
+:root[data-tema='claro'] {
+  --fundo: #ffffff;
+  --texto: #0a0a0a;
+  --suave: #5c5c5c;
+  --linha: rgba(0, 0, 0, 0.14);
+  --vidro: rgba(255, 255, 255, 0.78);
+  --ativo: rgba(0, 0, 0, 0.07);
+  --brilho: rgba(0, 0, 0, 0.28);
+  --brilho-forte: rgba(0, 0, 0, 0.46);
+  --sombra: 0 0 30px var(--brilho);
+  --sombra-hover: 0 0 50px var(--brilho-forte);
+  --reflexo: rgba(0, 0, 0, 0.14);
+  --painel: #f0f0f0;
+  --overlay: rgba(255, 255, 255, 0.96);
+  color-scheme: light;
+}
 
-const techContainerStyle = {
-  display: 'flex',
-  gap: '6px',
-  flexWrap: 'wrap'
-};
+html {
+  scroll-behavior: smooth;
+  overflow-x: hidden;
+  scrollbar-color: var(--suave) var(--fundo);
+  scrollbar-width: thin;
+}
 
-const techTagStyle = {
-  backgroundColor: 'rgba(255, 255, 255, 0.04)',
-  border: '1px solid rgba(255, 255, 255, 0.08)',
-  padding: '4px 8px',
-  borderRadius: '4px',
-  fontSize: '0.78rem',
-  color: '#bbb'
-};
+body { margin: 0; background: var(--fundo); }
 
-const socialLinkStyle = {
-  color: '#fff',
-  textDecoration: 'none',
-  fontSize: '0.85rem',
-  backgroundColor: 'rgba(255, 255, 255, 0.05)',
-  border: '1px solid rgba(255, 255, 255, 0.1)',
-  padding: '8px 14px',
-  borderRadius: '6px',
-  fontWeight: '500',
-  display: 'inline-block',
-  flexGrow: 1,
-  textAlign: 'center'
-};
+.app {
+  min-height: 100vh;
+  background: var(--fundo);
+  color: var(--texto);
+  font-family: var(--sans);
+  font-size: 1.0625rem;
+  line-height: 1.7;
+  -webkit-font-smoothing: antialiased;
+}
+
+.app *, .app *::before, .app *::after { box-sizing: border-box; }
+.app h1, .app h2, .app h3, .app p, .app dl, .app dd, .app ul { margin: 0; padding: 0; }
+.app ul { list-style: none; }
+.app a { color: inherit; text-decoration: none; }
+.app button { font: inherit; color: inherit; background: none; border: 0; padding: 0; cursor: pointer; text-align: left; }
+
+.app :focus-visible { outline: 2px solid var(--texto); outline-offset: 3px; border-radius: 2px; }
+
+/* Ocupa toda a largura disponível com respiro proporcional do celular ao desktop */
+.wrap {
+  width: 100%;
+  max-width: none;
+  margin: 0 auto;
+  padding: 0 clamp(20px, 4.5vw, 72px);
+}
+
+/* Menu flutuante */
+.pill {
+  position: fixed; top: 16px; left: 50%; transform: translateX(-50%);
+  z-index: 50; display: flex; align-items: center; gap: 2px; padding: 5px;
+  max-width: calc(100vw - 16px); overflow-x: auto; scrollbar-width: none;
+  background: var(--vidro);
+  backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px);
+  border: 1px solid var(--linha); border-radius: 999px;
+}
+.pill::-webkit-scrollbar { display: none; }
+.pill a {
+  display: inline-flex; align-items: center;
+  padding: 7px 15px; border-radius: 999px; font-size: 0.9375rem; line-height: 1.2;
+  color: var(--suave); white-space: nowrap; transition: color 0.2s, background-color 0.2s;
+}
+.pill a:hover { color: var(--texto); }
+.pill a[aria-current='true'] { color: var(--texto); background: var(--ativo); }
+
+/* Abertura: o único movimento automático da página */
+@keyframes rise { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: none; } }
+.rise { animation: rise 0.9s cubic-bezier(0.2, 0.7, 0.2, 1) both; animation-delay: calc(var(--i) * 90ms); }
+
+.hero { position: relative; min-height: 100svh; display: flex; align-items: center; padding: 112px 0 72px; }
+.hero-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.15fr) minmax(0, 0.85fr);
+  gap: clamp(32px, 5vw, 80px);
+  align-items: center;
+}
+.foto {
+  justify-self: end;
+  width: 100%;
+  max-width: clamp(280px, 28vw, 440px);
+  aspect-ratio: 1 / 1;
+  border-radius: 50%;
+  overflow: hidden;
+  border: 1px solid var(--linha);
+  box-shadow: 0 0 56px var(--brilho);
+  background: var(--fundo);
+}
+.foto img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: 56% 58%;
+  transform: scale(1.25);
+  transform-origin: 56% 58%;
+}
+.hero::before { content: ''; position: absolute; top: 14%; left: 50%; width: min(760px, 90vw); height: 340px; transform: translateX(-50%); background: radial-gradient(closest-side, var(--brilho), transparent); opacity: 0.55; filter: blur(24px); pointer-events: none; }
+.hero-grid { position: relative; }
+@keyframes letra { from { opacity: 0; transform: translateY(0.45em); filter: blur(6px); } to { opacity: 1; transform: none; filter: none; } }
+.letra { display: inline-block; animation: letra 0.85s cubic-bezier(0.2, 0.7, 0.2, 1) both; animation-delay: calc(var(--l) * 55ms + 180ms); }
+@keyframes troca { from { opacity: 0; transform: translateY(0.4em); filter: blur(4px); } to { opacity: 1; transform: none; filter: none; } }
+.troca { display: inline-block; animation: troca 0.6s cubic-bezier(0.2, 0.7, 0.2, 1) both; }
+.lead2 { margin-top: 2px; }
+.anim-texto { opacity: 0; transform: translateY(14px); transition: opacity 0.8s ease, transform 0.8s cubic-bezier(0.2, 0.7, 0.2, 1); }
+.anim-texto.on { opacity: 1; transform: none; }
+.status { color: var(--suave); font-size: 1rem; margin-bottom: 14px; }
+.hero h1 {
+  text-shadow: 0 0 32px var(--brilho);
+  font-family: var(--serif); font-weight: 400;
+  font-size: clamp(3.3rem, 8.8vw, 7.2rem); line-height: 0.96; letter-spacing: -0.02em;
+  margin-bottom: 24px;
+}
+.lead { max-width: 40rem; font-size: clamp(1.0625rem, 1.35vw, 1.25rem); color: var(--texto); }
+.acoes { display: flex; flex-wrap: wrap; align-items: center; gap: 12px 28px; margin-top: 32px; }
+.botao {
+  background: var(--texto); color: var(--fundo) !important; font-weight: 500; font-size: 1rem;
+  padding: 12px 24px; border-radius: 999px; transition: opacity 0.2s, box-shadow 0.25s;
+}
+.botao:hover { opacity: 0.92; box-shadow: 0 0 28px var(--brilho); }
+
+.link { color: var(--texto); font-size: 1rem; background: linear-gradient(currentColor, currentColor) 0 100% / 0 1px no-repeat; transition: background-size 0.25s; padding-bottom: 2px; }
+.link:hover { background-size: 100% 1px; }
+
+/* Seções */
+.sec { width: 100%; padding: clamp(68px, 8vw, 104px) 0; border-top: 1px solid var(--linha); background: var(--fundo); }
+.grade {
+  display: grid;
+  grid-template-columns: clamp(160px, 16vw, 230px) minmax(0, 1fr);
+  gap: clamp(24px, 4vw, 56px);
+}
+.sec h2 { font-family: var(--serif); font-weight: 400; font-size: clamp(1.9rem, 2.7vw, 2.4rem); line-height: 1.1; }
+.sec p { max-width: 46rem; }
+.sec .texto p { font-size: 1.0625rem; }
+.sec .texto p + p { margin-top: 1.1em; }
+.duas {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: clamp(32px, 5vw, 64px);
+  align-items: start;
+}
+
+.stack { border-top: 1px solid var(--linha); }
+.stack div { display: grid; grid-template-columns: 155px minmax(0, 1fr); gap: 20px; padding: 15px 0; border-bottom: 1px solid var(--linha); }
+.stack dt { color: var(--suave); font-size: 1rem; }
+.stack dd { display: flex; flex-wrap: wrap; gap: 8px 20px; }
+.tec { display: inline-flex; align-items: center; gap: 8px; font-size: 1rem; }
+.tec svg { flex-shrink: 0; opacity: 0.88; }
+
+/* Projetos — faixa, linha horizontal e aura/animação na print */
+.topo { margin-bottom: clamp(36px, 5vw, 56px); }
+.lista-proj { width: 100%; }
+.proj-faixa { width: 100%; background: var(--fundo); border-top: 1px solid var(--linha); }
+.proj-faixa:first-child { border-top: 0; }
+.proj {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.12fr);
+  gap: clamp(28px, 5vw, 64px);
+  align-items: center;
+  padding-top: 52px;
+  padding-bottom: 52px;
+}
+.proj-faixa:first-child .proj { padding-top: 0; }
+.proj-faixa:last-child .proj { padding-bottom: 0; }
+.proj h3 { font-size: clamp(1.4rem, 1.7vw, 1.6rem); font-weight: 500; line-height: 1.3; margin-bottom: 4px; }
+.proj h3 span { display: block; color: var(--suave); font-weight: 400; font-size: 1rem; margin-top: 4px; }
+.proj p { color: var(--suave); }
+.proj .descricao { margin-top: 18px; font-size: 1.0625rem; line-height: 1.7; }
+.tags { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 24px; }
+.tags li { font-size: 0.875rem; line-height: 1; padding: 9px 14px; border: 1px solid var(--linha); border-radius: 999px; color: var(--texto); }
+.proj .links { margin-top: 24px; display: flex; gap: 20px; }
+.proj .links .link { font-size: 1rem; }
+
+@keyframes brilhoSuave {
+  0%, 100% { box-shadow: var(--sombra); }
+  50% { box-shadow: var(--sombra-hover); }
+}
+
+.thumb {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16 / 10;
+  overflow: hidden;
+  border-radius: 8px;
+  border: 1px solid var(--linha);
+  background: var(--painel);
+  cursor: zoom-in;
+  box-shadow: var(--sombra);
+  animation: brilhoSuave 4.5s ease-in-out infinite;
+  transition: transform 0.35s cubic-bezier(0.2, 0.7, 0.2, 1), border-color 0.3s ease, box-shadow 0.35s ease;
+}
+.thumb::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    115deg,
+    transparent 20%,
+    var(--reflexo) 50%,
+    transparent 80%
+  );
+  transform: translateX(-130%) skewX(-18deg);
+  transition: transform 0.75s cubic-bezier(0.2, 0.7, 0.2, 1), opacity 0.3s ease;
+  opacity: 0;
+  pointer-events: none;
+}
+.thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: transform 0.55s cubic-bezier(0.2, 0.7, 0.2, 1), filter 0.35s ease;
+}
+.thumb:hover,
+.thumb:focus-visible {
+  transform: translateY(-3px);
+  border-color: var(--texto);
+  box-shadow: var(--sombra-hover);
+}
+.thumb:hover::after,
+.thumb:focus-visible::after {
+  opacity: 1;
+  transform: translateX(130%) skewX(-18deg);
+}
+.thumb:hover img,
+.thumb:focus-visible img {
+  transform: scale(1.035);
+  filter: brightness(1.04);
+}
+
+/* Certificados */
+.certs { width: 100%; }
+.certs li { border-top: 1px solid var(--linha); }
+.certs li:first-child { border-top: 0; }
+.certs button {
+  width: 100%;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: baseline;
+  gap: 20px;
+  padding: 18px 0;
+  cursor: zoom-in;
+}
+.c-info strong { display: block; font-size: 1.0625rem; font-weight: 500; transition: color 0.2s; }
+.c-info small { color: var(--suave); font-size: 0.9375rem; }
+.c-ano { color: var(--suave); font-size: 0.9375rem; flex-shrink: 0; }
+.certs button:hover strong { text-decoration: underline; text-underline-offset: 4px; }
+
+@media (min-width: 900px) {
+  .certs {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0 clamp(32px, 4vw, 64px);
+  }
+  .certs li:nth-child(2) {
+    border-top: 0;
+  }
+}
+
+/* Contato */
+.fim { padding-bottom: 84px; }
+.contato-grade, .contato-duas { align-items: start; }
+.chamada { font-family: var(--serif); font-size: clamp(2.1rem, 3.8vw, 3rem); line-height: 1.15; max-width: 22ch !important; }
+.redes { border-top: 1px solid var(--linha); width: 100%; }
+.redes li { padding: 16px 0; border-bottom: 1px solid var(--linha); font-size: 1.125rem; }
+.social-item { display: inline-flex; align-items: center; gap: 10px; }
+.social-item svg { flex-shrink: 0; opacity: 0.9; }
+
+/* Botão de tema, alinhado ao centro da NavBar */
+.pill > * { flex-shrink: 0; }
+.pill .sep { width: 1px; height: 18px; background: var(--linha); align-self: center; margin: 0 6px 0 4px; }
+.pill .tema {
+  width: 32px; height: 32px;
+  display: inline-flex; align-items: center; justify-content: center;
+  align-self: center; text-align: center; line-height: 1;
+  border-radius: 50%; color: var(--suave);
+  transition: color 0.2s, background-color 0.2s;
+}
+.pill .tema svg { display: block; }
+.pill .tema:hover { color: var(--texto); background: var(--ativo); }
+
+/* Imagem ampliada */
+@keyframes aparecer { from { opacity: 0; } to { opacity: 1; } }
+.overlay { position: fixed; inset: 0; z-index: 100; background: var(--overlay); display: flex; align-items: center; justify-content: center; padding: 56px 16px 16px; cursor: zoom-out; animation: aparecer 0.2s ease; }
+.overlay img { max-width: 100%; max-height: 100%; object-fit: contain; border-radius: 4px; cursor: default; }
+.fechar { position: absolute; top: 16px; right: 20px; color: var(--texto); font-size: 0.9375rem; padding: 6px 12px; border: 1px solid var(--linha); border-radius: 999px; }
+.fechar:hover { background: var(--ativo); }
+
+@media (max-width: 860px) {
+  .grade { grid-template-columns: 1fr; gap: 28px; }
+  .duas { grid-template-columns: 1fr; gap: 40px; }
+  .hero { padding: 96px 0 64px; min-height: auto; }
+  .hero-grid { grid-template-columns: 1fr; gap: 32px; }
+  .foto { order: -1; justify-self: center; max-width: 240px; }
+  .stack div { grid-template-columns: 1fr; gap: 4px; }
+  .proj { grid-template-columns: 1fr; gap: 24px; padding-top: 40px; padding-bottom: 40px; }
+  .thumb { order: -1; aspect-ratio: 16 / 9; }
+  .pill a { padding: 6px 10px; font-size: 0.875rem; }
+  .lead2 { min-height: 3.4em; }
+}
+
+@media (max-width: 520px) {
+  .wrap { padding: 0 18px; }
+  .pill { padding: 4px; }
+  .pill a { padding: 6px 8px; font-size: 0.8125rem; }
+  .pill a:first-child { display: none; }
+  .pill .sep { margin: 0 3px; }
+  .hero h1 { font-size: clamp(2.9rem, 13.5vw, 3.8rem); }
+  .acoes { gap: 12px 20px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  .rise, .overlay, .letra, .troca, .thumb { animation: none; }
+  .thumb::after { display: none; }
+  .anim-texto { opacity: 1; transform: none; }
+  .app * { transition: none !important; }
+}
+`;

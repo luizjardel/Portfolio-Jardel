@@ -1,7 +1,3 @@
-:root {
-  color-scheme: dark;
-}
-
 *,
 *::before,
 *::after {
@@ -19,7 +15,7 @@ body {
   padding: 0;
   width: 100%;
   min-height: 100%;
-  background: #000;
+  background: var(--fundo, #000);
   overflow: visible;
 }
 
@@ -31,3 +27,4 @@ body {
   height: auto;
   overflow: visible;
 }
+
